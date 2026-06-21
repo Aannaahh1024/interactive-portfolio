@@ -5,38 +5,26 @@ import { useReducedMotion } from 'framer-motion';
 
 interface Splash { id: number; x: number; y: number; }
 
-// Blobs anchored to screen edges and corners — centre stays clear for content
-// cx/cy are normalised 0-1 relative to viewport
-const BLOBS = [
-  { cx: 0.02, cy: 0.04, color: 'rgba(255,148,186,0.68)', r: 530, amp: 62, freq: 0.00037, pf: 0.026, ph: 0.0 },
-  { cx: 0.98, cy: 0.03, color: 'rgba(255,228,108,0.62)', r: 490, amp: 55, freq: 0.00030, pf: 0.020, ph: 1.1 },
-  { cx: 0.02, cy: 0.97, color: 'rgba(115,235,188,0.62)', r: 510, amp: 66, freq: 0.00043, pf: 0.031, ph: 2.2 },
-  { cx: 0.98, cy: 0.97, color: 'rgba(105,193,255,0.66)', r: 520, amp: 58, freq: 0.00035, pf: 0.022, ph: 3.3 },
-  { cx: 0.50, cy: 0.00, color: 'rgba(195,153,255,0.60)', r: 470, amp: 46, freq: 0.00041, pf: 0.018, ph: 0.7 },
-  { cx: 0.50, cy: 1.00, color: 'rgba(255,193,138,0.57)', r: 460, amp: 52, freq: 0.00032, pf: 0.024, ph: 1.8 },
-  { cx: 0.00, cy: 0.50, color: 'rgba(255,173,213,0.60)', r: 450, amp: 72, freq: 0.00046, pf: 0.029, ph: 2.9 },
-  { cx: 1.00, cy: 0.50, color: 'rgba(138,218,255,0.60)', r: 465, amp: 63, freq: 0.00039, pf: 0.021, ph: 0.4 },
+// Three ambient ghost brushes that move in sine/cosine paths,
+// keeping the background alive even when the mouse is still.
+const GHOSTS = [
+  { freqX: 0.00022, freqY: 0.00015, phaseX: 0.0,  phaseY: 0.8,  hueOff: 0,   r: 320, alpha: 0.055 },
+  { freqX: 0.00017, freqY: 0.00021, phaseX: 2.1,  phaseY: 1.4,  hueOff: 120, r: 280, alpha: 0.050 },
+  { freqX: 0.00025, freqY: 0.00018, phaseX: 4.2,  phaseY: 3.1,  hueOff: 240, r: 260, alpha: 0.045 },
 ];
-
-// Donut mask: transparent centre → text readable; opaque at edges → colour intensity builds outward
-const CENTRE_MASK =
-  'radial-gradient(ellipse 54% 60% at 50% 50%, transparent 28%, rgba(0,0,0,0.45) 52%, rgba(0,0,0,0.85) 72%, black 90%)';
 
 export default function MouseEffect() {
   const prefersReduced = useReducedMotion();
-  const blobRefs       = useRef<(HTMLDivElement | null)[]>([]);
-  const cursorRef      = useRef<HTMLDivElement>(null);  // cursor-follow rainbow layer
-  const mouseNorm      = useRef({ x: 0.5, y: 0.5 });
-  const smoothMouse    = useRef({ x: 0.5, y: 0.5 });
-  const rawMouse       = useRef({ x: -400, y: -400 }); // pixel coords for cursor layer
-  const smoothRaw      = useRef({ x: -400, y: -400 });
-  const hueRef         = useRef(0);
-  const fadeTimer      = useRef<ReturnType<typeof setTimeout>>();
-  const blendMode      = useRef<string>('multiply');
-  const rafRef         = useRef<number>();
+  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const mouse      = useRef({ x: -500, y: -500 });
+  const prevMouse  = useRef({ x: -500, y: -500 });
+  const hue        = useRef(0);
+  const moving     = useRef(false);
+  const moveTimer  = useRef<ReturnType<typeof setTimeout>>();
+  const rafRef     = useRef<number>();
   const [splashes, setSplashes] = useState<Splash[]>([]);
 
-  // Click splashes always active regardless of reduced-motion
+  // Click splashes — always active
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const id = Date.now() + Math.random();
@@ -50,180 +38,130 @@ export default function MouseEffect() {
   useEffect(() => {
     if (prefersReduced) return;
 
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
+
+    const resize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // Preserve existing paint when resizing
+      const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      canvas.width  = w;
+      canvas.height = h;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      try { ctx.putImageData(img, 0, 0); } catch (_) { /* ignore on first paint */ }
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
     const onMove = (e: MouseEvent) => {
-      mouseNorm.current = { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight };
-      rawMouse.current  = { x: e.clientX, y: e.clientY };
-      // show cursor layer, schedule fade
-      if (cursorRef.current) cursorRef.current.style.opacity = '1';
-      clearTimeout(fadeTimer.current);
-      fadeTimer.current = setTimeout(() => {
-        if (cursorRef.current) cursorRef.current.style.opacity = '0';
-      }, 2000);
+      prevMouse.current = { ...mouse.current };
+      mouse.current = { x: e.clientX, y: e.clientY };
+      moving.current = true;
+      clearTimeout(moveTimer.current);
+      moveTimer.current = setTimeout(() => { moving.current = false; }, 80);
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+
+    // Paint a soft radial pastel blob
+    const blob = (x: number, y: number, h: number, radius: number, alpha: number) => {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      g.addColorStop(0,    `hsla(${h % 360},            92%, 78%, ${alpha})`);
+      g.addColorStop(0.30, `hsla(${(h + 45)  % 360},   88%, 80%, ${alpha * 0.65})`);
+      g.addColorStop(0.60, `hsla(${(h + 90)  % 360},   85%, 82%, ${alpha * 0.30})`);
+      g.addColorStop(0.85, `hsla(${(h + 135) % 360},   80%, 84%, ${alpha * 0.08})`);
+      g.addColorStop(1,    `hsla(${(h + 180) % 360},   75%, 86%, 0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
     };
 
     const animate = (time: number) => {
-      // detect theme for blend mode — only writes to DOM when it actually changes
-      const isDark   = document.documentElement.classList.contains('dark');
-      const newBlend = isDark ? 'screen' : 'multiply';
-      if (newBlend !== blendMode.current) {
-        blendMode.current = newBlend;
-        blobRefs.current.forEach(el => { if (el) el.style.mixBlendMode = newBlend; });
-      }
+      ctx.globalCompositeOperation = 'source-over';
 
-      // very slow spring toward mouse — liquid parallax, never snappy
-      smoothMouse.current.x += (mouseNorm.current.x - smoothMouse.current.x) * 0.028;
-      smoothMouse.current.y += (mouseNorm.current.y - smoothMouse.current.y) * 0.028;
-      const mx = smoothMouse.current.x;
-      const my = smoothMouse.current.y;
-      const W  = window.innerWidth;
-      const H  = window.innerHeight;
+      // Slowly fade everything back to white — creates the persistent swirl effect
+      ctx.fillStyle = 'rgba(255,255,255,0.006)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // --- cursor-following rainbow gradient ---
-      smoothRaw.current.x += (rawMouse.current.x - smoothRaw.current.x) * 0.12;
-      smoothRaw.current.y += (rawMouse.current.y - smoothRaw.current.y) * 0.12;
-      hueRef.current = (hueRef.current + 0.8) % 360;
-      const h = hueRef.current;
-      const cx2 = smoothRaw.current.x;
-      const cy2 = smoothRaw.current.y;
-      if (cursorRef.current) {
-        cursorRef.current.style.background = `radial-gradient(180px circle at ${cx2}px ${cy2}px,
-          hsla(${h}        ,85%,68%,0.50) 0%,
-          hsla(${(h+45)%360},85%,68%,0.36) 25%,
-          hsla(${(h+90)%360},85%,68%,0.22) 50%,
-          hsla(${(h+135)%360},85%,68%,0.08) 75%,
-          transparent 100%)`;
-      }
+      hue.current = (hue.current + 0.55) % 360;
+      const W = canvas.width;
+      const H = canvas.height;
 
-      BLOBS.forEach((blob, i) => {
-        const el = blobRefs.current[i];
-        if (!el) return;
-
-        // autonomous organic drift — unique period + phase per blob
-        const driftX = Math.sin(time * blob.freq + blob.ph + i * 0.7) * blob.amp;
-        const driftY = Math.cos(time * blob.freq * 0.76 + blob.ph + i * 0.5) * blob.amp * 0.68;
-
-        // parallax: mouse pull is proportional to blob's pf factor
-        const pX = (mx - 0.5) * blob.pf * W;
-        const pY = (my - 0.5) * blob.pf * H;
-
-        // proximity: blob swells gently when cursor is nearby
-        const bx    = blob.cx * W + driftX + pX;
-        const by    = blob.cy * H + driftY + pY;
-        const dist  = Math.hypot(mx * W - bx, my * H - by);
-        const scale = 1 + Math.max(0, 1 - dist / 460) * 0.12;
-
-        const size = blob.r * scale;
-        el.style.width     = `${size}px`;
-        el.style.height    = `${size}px`;
-        el.style.transform = `translate(${bx - size / 2}px, ${by - size / 2}px)`;
+      // Ambient ghost brushes — always painting softly in background
+      GHOSTS.forEach((g) => {
+        const gx = (Math.sin(time * g.freqX + g.phaseX) * 0.42 + 0.5) * W;
+        const gy = (Math.cos(time * g.freqY + g.phaseY) * 0.42 + 0.5) * H;
+        blob(gx, gy, (hue.current + g.hueOff) % 360, g.r, g.alpha);
       });
+
+      // Cursor brush — paints along the mouse path with interpolated steps
+      if (moving.current) {
+        const steps = 4;
+        for (let s = 0; s < steps; s++) {
+          const t2 = s / steps;
+          const ix = prevMouse.current.x + (mouse.current.x - prevMouse.current.x) * t2;
+          const iy = prevMouse.current.y + (mouse.current.y - prevMouse.current.y) * t2;
+          blob(ix, iy, hue.current + s * 12, 140, 0.52);
+        }
+      }
 
       rafRef.current = requestAnimationFrame(animate);
     };
 
-    window.addEventListener('mousemove', onMove, { passive: true });
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(rafRef.current!);
       window.removeEventListener('mousemove', onMove);
-      clearTimeout(fadeTimer.current);
+      window.removeEventListener('resize', resize);
+      clearTimeout(moveTimer.current);
     };
   }, [prefersReduced]);
 
-  // Reduced-motion: static edge gradients only, no RAF
+  // Reduced-motion: static soft corner gradients, no animation
   if (prefersReduced) {
     return (
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 40% 40% at 0% 0%,   rgba(255,148,186,0.18), transparent 70%),
-            radial-gradient(ellipse 40% 40% at 100% 0%,  rgba(255,228,108,0.15), transparent 70%),
-            radial-gradient(ellipse 40% 40% at 0% 100%,  rgba(115,235,188,0.15), transparent 70%),
-            radial-gradient(ellipse 40% 40% at 100% 100%,rgba(105,193,255,0.18), transparent 70%)
-          `,
-        }}
-      />
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0" style={{
+        background: `
+          radial-gradient(ellipse 50% 50% at 5%  5%,  rgba(255,180,210,0.22), transparent 70%),
+          radial-gradient(ellipse 50% 50% at 95% 5%,  rgba(255,240,140,0.18), transparent 70%),
+          radial-gradient(ellipse 50% 50% at 5%  95%, rgba(160,240,200,0.18), transparent 70%),
+          radial-gradient(ellipse 50% 50% at 95% 95%, rgba(160,210,255,0.22), transparent 70%)
+        `,
+      }} />
     );
   }
 
   return (
     <>
-      {/* Very gentle warp — keeps edges organic, scale kept low so it stays dreamy not jittery */}
-      <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
-        <defs>
-          <filter id="smoke-warp" x="-30%" y="-30%" width="160%" height="160%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.005 0.004" numOctaves="5" seed="13" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
-
-      {/* Cursor-following rainbow — fades after 2 s of inactivity */}
-      <div
-        ref={cursorRef}
-        aria-hidden
-        className="pointer-events-none fixed inset-0 z-[1]"
-        style={{ opacity: 0, transition: 'opacity 0.7s ease', mixBlendMode: 'multiply' }}
-      />
-
-      {/* Donut-masked blob container: transparent centre, colour builds toward edges */}
-      <div
+      <canvas
+        ref={canvasRef}
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          WebkitMaskImage: CENTRE_MASK,
-          maskImage:       CENTRE_MASK,
-          filter:          'url(#smoke-warp)',
-        }}
-      >
-        {BLOBS.map((blob, i) => (
-          <div
-            key={i}
-            ref={el => { blobRefs.current[i] = el; }}
-            className="absolute top-0 left-0"
-            style={{
-              width:        blob.r,
-              height:       blob.r,
-              borderRadius: '50%',
-              background:   blob.color,
-              filter:       `blur(${Math.round(blob.r * 0.17)}px)`,
-              mixBlendMode: 'multiply',
-              willChange:   'transform, width, height',
-            }}
-          />
-        ))}
-      </div>
+        style={{ display: 'block' }}
+      />
 
-      {/* Click splash rings */}
       {splashes.map(s => (
-        <div
-          key={s.id}
-          aria-hidden
-          className="pointer-events-none fixed z-50"
-          style={{ left: s.x, top: s.y }}
-        >
+        <div key={s.id} aria-hidden className="pointer-events-none fixed z-50"
+          style={{ left: s.x, top: s.y }}>
           {[0, 1, 2].map(ring => {
             const d = 60 + ring * 32;
             return (
-              <div
-                key={ring}
-                className="splash-ring absolute rounded-full"
+              <div key={ring} className="splash-ring absolute rounded-full"
                 style={{
-                  width:  d, height: d,
+                  width: d, height: d,
                   left: -(d / 2), top: -(d / 2),
                   border: '2px solid var(--accent)',
                   animationDelay: `${ring * 0.08}s`,
-                }}
-              />
+                }} />
             );
           })}
-          <div
-            className="splash-ring absolute rounded-full"
-            style={{ width: 16, height: 16, left: -8, top: -8, background: 'var(--accent)', animationDuration: '0.4s' }}
-          />
+          <div className="splash-ring absolute rounded-full"
+            style={{ width: 16, height: 16, left: -8, top: -8,
+              background: 'var(--accent)', animationDuration: '0.4s' }} />
         </div>
       ))}
     </>
