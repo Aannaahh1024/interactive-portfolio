@@ -9,20 +9,23 @@ interface Splash {
 }
 
 const BLOBS = [
-  { color: 'rgba(0, 229, 255, 0.85)',   size: 210, lag: 0.16, rx: '60% 40% 55% 45% / 50% 60% 40% 50%' },
-  { color: 'rgba(99, 102, 241, 0.80)',  size: 175, lag: 0.09, rx: '45% 55% 40% 60% / 60% 40% 55% 45%' },
-  { color: 'rgba(236, 72, 153, 0.80)',  size: 155, lag: 0.055, rx: '55% 45% 60% 40% / 45% 55% 50% 50%' },
-  { color: 'rgba(251, 146, 60, 0.70)',  size: 135, lag: 0.03, rx: '40% 60% 45% 55% / 55% 45% 60% 40%' },
-  { color: 'rgba(34, 197, 94, 0.65)',   size: 115, lag: 0.018, rx: '50% 50% 40% 60% / 60% 40% 50% 50%' },
-  { color: 'rgba(168, 85, 247, 0.75)',  size: 95,  lag: 0.07,  rx: '65% 35% 50% 50% / 40% 60% 45% 55%' },
+  { color: 'rgba(0, 229, 255, 0.90)',   w: 52,  h: 140, lag: 0.18 },
+  { color: 'rgba(99, 102, 241, 0.85)',  w: 46,  h: 122, lag: 0.11 },
+  { color: 'rgba(236, 72, 153, 0.85)',  w: 42,  h: 108, lag: 0.072 },
+  { color: 'rgba(251, 146, 60, 0.78)',  w: 38,  h: 94,  lag: 0.046 },
+  { color: 'rgba(34, 197, 94, 0.72)',   w: 34,  h: 80,  lag: 0.028 },
+  { color: 'rgba(168, 85, 247, 0.80)',  w: 30,  h: 68,  lag: 0.017 },
+  { color: 'rgba(251, 191, 36, 0.70)',  w: 26,  h: 55,  lag: 0.010 },
+  { color: 'rgba(239, 68, 68, 0.65)',   w: 22,  h: 44,  lag: 0.006 },
 ];
 
 export default function MouseEffect() {
-  const blobRefs    = useRef<(HTMLDivElement | null)[]>([]);
-  const positions   = useRef(BLOBS.map(() => ({ x: -600, y: -600 })));
-  const mouse       = useRef({ x: -600, y: -600 });
-  const rafRef      = useRef<number>();
-  const fadeTimer   = useRef<ReturnType<typeof setTimeout>>();
+  const blobRefs     = useRef<(HTMLDivElement | null)[]>([]);
+  const positions    = useRef(BLOBS.map(() => ({ x: -600, y: -600 })));
+  const prevPos      = useRef(BLOBS.map(() => ({ x: -600, y: -600 })));
+  const mouse        = useRef({ x: -600, y: -600 });
+  const rafRef       = useRef<number>();
+  const fadeTimer    = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
   const [splashes, setSplashes] = useState<Splash[]>([]);
 
@@ -33,7 +36,7 @@ export default function MouseEffect() {
       clearTimeout(fadeTimer.current);
       fadeTimer.current = setTimeout(() => {
         if (containerRef.current) containerRef.current.style.opacity = '0';
-      }, 2000);
+      }, 2500);
     };
 
     const onClick = (e: MouseEvent) => {
@@ -44,12 +47,23 @@ export default function MouseEffect() {
 
     const animate = () => {
       BLOBS.forEach((blob, i) => {
-        const pos = positions.current[i];
+        const pos  = positions.current[i];
+        const prev = prevPos.current[i];
+
+        // per-blob velocity → rotation angle so each blob points along its own travel direction
+        const vx    = pos.x - prev.x;
+        const vy    = pos.y - prev.y;
+        const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
+
+        prev.x = pos.x;
+        prev.y = pos.y;
+
         pos.x += (mouse.current.x - pos.x) * blob.lag;
         pos.y += (mouse.current.y - pos.y) * blob.lag;
+
         const el = blobRefs.current[i];
         if (el) {
-          el.style.transform = `translate(${pos.x - blob.size / 2}px, ${pos.y - blob.size / 2}px)`;
+          el.style.transform = `translate(${pos.x - blob.w / 2}px, ${pos.y - blob.h / 2}px) rotate(${angle}deg)`;
         }
       });
       rafRef.current = requestAnimationFrame(animate);
@@ -69,12 +83,11 @@ export default function MouseEffect() {
 
   return (
     <>
-      {/* SVG filter: turbulence displaces blob edges into fluid organic shapes */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
         <defs>
-          <filter id="fluid-distort" x="-30%" y="-30%" width="160%" height="160%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.018 0.012" numOctaves="4" seed="8" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" xChannelSelector="R" yChannelSelector="G" />
+          <filter id="fluid-distort" x="-40%" y="-40%" width="180%" height="180%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.022 0.014" numOctaves="3" seed="5" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
@@ -91,11 +104,11 @@ export default function MouseEffect() {
             ref={(el) => { blobRefs.current[i] = el; }}
             className="absolute top-0 left-0"
             style={{
-              width:        blob.size,
-              height:       blob.size,
-              borderRadius: blob.rx,
+              width:        blob.w,
+              height:       blob.h,
+              borderRadius: '50%',
               background:   blob.color,
-              filter:       `blur(${Math.round(blob.size * 0.32)}px)`,
+              filter:       `blur(${Math.round(blob.w * 0.55)}px)`,
               mixBlendMode: 'screen',
               willChange:   'transform',
             }}
