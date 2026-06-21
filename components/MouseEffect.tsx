@@ -9,20 +9,20 @@ interface Splash {
 }
 
 const BLOBS = [
-  { color: 'rgba(0, 229, 255, 0.75)',   size: 240, lag: 0.10 },
-  { color: 'rgba(99, 102, 241, 0.65)',  size: 190, lag: 0.06 },
-  { color: 'rgba(236, 72, 153, 0.65)',  size: 160, lag: 0.04 },
-  { color: 'rgba(251, 146, 60, 0.55)',  size: 140, lag: 0.08 },
-  { color: 'rgba(34, 197, 94, 0.50)',   size: 120, lag: 0.03 },
-  { color: 'rgba(168, 85, 247, 0.55)',  size: 100, lag: 0.07 },
+  { color: 'rgba(0, 229, 255, 0.85)',   size: 210, lag: 0.16, rx: '60% 40% 55% 45% / 50% 60% 40% 50%' },
+  { color: 'rgba(99, 102, 241, 0.80)',  size: 175, lag: 0.09, rx: '45% 55% 40% 60% / 60% 40% 55% 45%' },
+  { color: 'rgba(236, 72, 153, 0.80)',  size: 155, lag: 0.055, rx: '55% 45% 60% 40% / 45% 55% 50% 50%' },
+  { color: 'rgba(251, 146, 60, 0.70)',  size: 135, lag: 0.03, rx: '40% 60% 45% 55% / 55% 45% 60% 40%' },
+  { color: 'rgba(34, 197, 94, 0.65)',   size: 115, lag: 0.018, rx: '50% 50% 40% 60% / 60% 40% 50% 50%' },
+  { color: 'rgba(168, 85, 247, 0.75)',  size: 95,  lag: 0.07,  rx: '65% 35% 50% 50% / 40% 60% 45% 55%' },
 ];
 
 export default function MouseEffect() {
-  const blobRefs   = useRef<(HTMLDivElement | null)[]>([]);
-  const positions  = useRef(BLOBS.map(() => ({ x: -500, y: -500 })));
-  const mouse      = useRef({ x: -500, y: -500 });
-  const rafRef     = useRef<number>();
-  const fadeTimer  = useRef<ReturnType<typeof setTimeout>>();
+  const blobRefs    = useRef<(HTMLDivElement | null)[]>([]);
+  const positions   = useRef(BLOBS.map(() => ({ x: -600, y: -600 })));
+  const mouse       = useRef({ x: -600, y: -600 });
+  const rafRef      = useRef<number>();
+  const fadeTimer   = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
   const [splashes, setSplashes] = useState<Splash[]>([]);
 
@@ -69,11 +69,21 @@ export default function MouseEffect() {
 
   return (
     <>
+      {/* SVG filter: turbulence displaces blob edges into fluid organic shapes */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
+        <defs>
+          <filter id="fluid-distort" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.018 0.012" numOctaves="4" seed="8" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+
       <div
         ref={containerRef}
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-        style={{ opacity: 0, transition: 'opacity 0.8s ease' }}
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{ opacity: 0, transition: 'opacity 0.8s ease', filter: 'url(#fluid-distort)' }}
       >
         {BLOBS.map((blob, i) => (
           <div
@@ -81,13 +91,13 @@ export default function MouseEffect() {
             ref={(el) => { blobRefs.current[i] = el; }}
             className="absolute top-0 left-0"
             style={{
-              width:  blob.size,
-              height: blob.size,
-              borderRadius: '50%',
-              background: blob.color,
-              filter: `blur(${Math.round(blob.size * 0.38)}px)`,
+              width:        blob.size,
+              height:       blob.size,
+              borderRadius: blob.rx,
+              background:   blob.color,
+              filter:       `blur(${Math.round(blob.size * 0.32)}px)`,
               mixBlendMode: 'screen',
-              willChange: 'transform',
+              willChange:   'transform',
             }}
           />
         ))}
@@ -107,10 +117,10 @@ export default function MouseEffect() {
                 key={ring}
                 className="splash-ring absolute rounded-full"
                 style={{
-                  width: d,
+                  width:  d,
                   height: d,
-                  left: -(d / 2),
-                  top:  -(d / 2),
+                  left:   -(d / 2),
+                  top:    -(d / 2),
                   border: '2px solid var(--accent)',
                   animationDelay: `${ring * 0.08}s`,
                 }}
@@ -119,14 +129,7 @@ export default function MouseEffect() {
           })}
           <div
             className="splash-ring absolute rounded-full"
-            style={{
-              width: 16,
-              height: 16,
-              left: -8,
-              top:  -8,
-              background: 'var(--accent)',
-              animationDuration: '0.4s',
-            }}
+            style={{ width: 16, height: 16, left: -8, top: -8, background: 'var(--accent)', animationDuration: '0.4s' }}
           />
         </div>
       ))}
