@@ -22,16 +22,16 @@
   }
 
   .dark {
-    --background: #050505;
-    --foreground: #f0f0f0;
-    --surface: #0d0d0d;
-    --border-color: rgba(255, 255, 255, 0.07);
+    --background: #000000;
+    --foreground: #f2f2f2;
+    --surface: #0a0a0a;
+    --border-color: rgba(255, 255, 255, 0.08);
     --accent: #00e5ff;
-    --accent-glow: rgba(0, 229, 255, 0.1);
-    --muted: #888888;
-    --user-bubble: #1a1a1a;
-    --avatar-bubble: rgba(0, 229, 255, 0.04);
-    --avatar-bubble-border: rgba(0, 229, 255, 0.15);
+    --accent-glow: rgba(0, 229, 255, 0.12);
+    --muted: #909090;
+    --user-bubble: #111111;
+    --avatar-bubble: rgba(0, 229, 255, 0.05);
+    --avatar-bubble-border: rgba(0, 229, 255, 0.18);
     --scrollbar: rgba(255, 255, 255, 0.1);
     /* mouse gradient — dark mode */
     --mg1: rgba(0, 229, 255, 0.07);
