@@ -67,11 +67,11 @@ export default function MouseEffect() {
     // Paint a soft radial pastel blob
     const blob = (x: number, y: number, h: number, radius: number, alpha: number) => {
       const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      g.addColorStop(0,    `hsla(${h % 360},            95%, 72%, ${alpha})`);
-      g.addColorStop(0.30, `hsla(${(h + 45)  % 360},   92%, 68%, ${alpha * 0.65})`);
-      g.addColorStop(0.60, `hsla(${(h + 90)  % 360},   88%, 65%, ${alpha * 0.30})`);
-      g.addColorStop(0.85, `hsla(${(h + 135) % 360},   85%, 62%, ${alpha * 0.08})`);
-      g.addColorStop(1,    `hsla(${(h + 180) % 360},   80%, 60%, 0)`);
+      g.addColorStop(0,    `hsla(${h % 360},            65%, 85%, ${alpha})`);
+      g.addColorStop(0.30, `hsla(${(h + 45)  % 360},   60%, 82%, ${alpha * 0.65})`);
+      g.addColorStop(0.60, `hsla(${(h + 90)  % 360},   55%, 80%, ${alpha * 0.30})`);
+      g.addColorStop(0.85, `hsla(${(h + 135) % 360},   50%, 78%, ${alpha * 0.08})`);
+      g.addColorStop(1,    `hsla(${(h + 180) % 360},   45%, 76%, 0)`);
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
