@@ -8,38 +8,31 @@ interface Splash {
   y: number;
 }
 
-function getGradient(x: number, y: number, dark: boolean) {
-  if (dark) {
-    return `radial-gradient(200px circle at ${x}px ${y}px,
-      rgba(0,229,255,0.55)   0%,
-      rgba(99,102,241,0.40)  30%,
-      rgba(236,72,153,0.28)  55%,
-      rgba(251,146,60,0.15)  75%,
-      transparent            100%)`;
-  }
-  return `radial-gradient(200px circle at ${x}px ${y}px,
-    rgba(6,182,212,0.45)   0%,
-    rgba(99,102,241,0.32)  30%,
-    rgba(219,39,119,0.22)  55%,
-    rgba(234,88,12,0.12)   75%,
-    transparent            100%)`;
-}
+const BLOBS = [
+  { color: 'rgba(0, 229, 255, 0.75)',   size: 240, lag: 0.10 },
+  { color: 'rgba(99, 102, 241, 0.65)',  size: 190, lag: 0.06 },
+  { color: 'rgba(236, 72, 153, 0.65)',  size: 160, lag: 0.04 },
+  { color: 'rgba(251, 146, 60, 0.55)',  size: 140, lag: 0.08 },
+  { color: 'rgba(34, 197, 94, 0.50)',   size: 120, lag: 0.03 },
+  { color: 'rgba(168, 85, 247, 0.55)',  size: 100, lag: 0.07 },
+];
 
 export default function MouseEffect() {
-  const gradRef       = useRef<HTMLDivElement>(null);
-  const fadeTimerRef  = useRef<ReturnType<typeof setTimeout>>();
+  const blobRefs   = useRef<(HTMLDivElement | null)[]>([]);
+  const positions  = useRef(BLOBS.map(() => ({ x: -500, y: -500 })));
+  const mouse      = useRef({ x: -500, y: -500 });
+  const rafRef     = useRef<number>();
+  const fadeTimer  = useRef<ReturnType<typeof setTimeout>>();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [splashes, setSplashes] = useState<Splash[]>([]);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
-      if (!gradRef.current) return;
-      const dark = document.documentElement.classList.contains('dark');
-      gradRef.current.style.background = getGradient(e.clientX, e.clientY, dark);
-      gradRef.current.style.opacity    = '1';
-
-      clearTimeout(fadeTimerRef.current);
-      fadeTimerRef.current = setTimeout(() => {
-        if (gradRef.current) gradRef.current.style.opacity = '0';
+      mouse.current = { x: e.clientX, y: e.clientY };
+      if (containerRef.current) containerRef.current.style.opacity = '1';
+      clearTimeout(fadeTimer.current);
+      fadeTimer.current = setTimeout(() => {
+        if (containerRef.current) containerRef.current.style.opacity = '0';
       }, 2000);
     };
 
@@ -49,26 +42,57 @@ export default function MouseEffect() {
       setTimeout(() => setSplashes((p) => p.filter((s) => s.id !== id)), 800);
     };
 
+    const animate = () => {
+      BLOBS.forEach((blob, i) => {
+        const pos = positions.current[i];
+        pos.x += (mouse.current.x - pos.x) * blob.lag;
+        pos.y += (mouse.current.y - pos.y) * blob.lag;
+        const el = blobRefs.current[i];
+        if (el) {
+          el.style.transform = `translate(${pos.x - blob.size / 2}px, ${pos.y - blob.size / 2}px)`;
+        }
+      });
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
     window.addEventListener('mousemove', onMove, { passive: true });
     window.addEventListener('click', onClick);
+
     return () => {
+      cancelAnimationFrame(rafRef.current!);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('click', onClick);
-      clearTimeout(fadeTimerRef.current);
+      clearTimeout(fadeTimer.current);
     };
   }, []);
 
   return (
     <>
-      {/* Liquid gradient — position and opacity updated directly on the DOM node, zero re-renders */}
       <div
-        ref={gradRef}
+        ref={containerRef}
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{ opacity: 0, transition: 'opacity 0.6s ease' }}
-      />
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+        style={{ opacity: 0, transition: 'opacity 0.8s ease' }}
+      >
+        {BLOBS.map((blob, i) => (
+          <div
+            key={i}
+            ref={(el) => { blobRefs.current[i] = el; }}
+            className="absolute top-0 left-0"
+            style={{
+              width:  blob.size,
+              height: blob.size,
+              borderRadius: '50%',
+              background: blob.color,
+              filter: `blur(${Math.round(blob.size * 0.38)}px)`,
+              mixBlendMode: 'screen',
+              willChange: 'transform',
+            }}
+          />
+        ))}
+      </div>
 
-      {/* Splash rings on click */}
       {splashes.map((s) => (
         <div
           key={s.id}
@@ -93,7 +117,6 @@ export default function MouseEffect() {
               />
             );
           })}
-          {/* Inner fill dot */}
           <div
             className="splash-ring absolute rounded-full"
             style={{
