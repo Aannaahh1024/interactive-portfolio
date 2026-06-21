@@ -45,11 +45,10 @@ export default function MouseEffect() {
     const resize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // Preserve existing paint when resizing
       const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
       canvas.width  = w;
       canvas.height = h;
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, w, h);
       try { ctx.putImageData(img, 0, 0); } catch (_) { /* ignore on first paint */ }
     };
@@ -68,11 +67,11 @@ export default function MouseEffect() {
     // Paint a soft radial pastel blob
     const blob = (x: number, y: number, h: number, radius: number, alpha: number) => {
       const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      g.addColorStop(0,    `hsla(${h % 360},            92%, 78%, ${alpha})`);
-      g.addColorStop(0.30, `hsla(${(h + 45)  % 360},   88%, 80%, ${alpha * 0.65})`);
-      g.addColorStop(0.60, `hsla(${(h + 90)  % 360},   85%, 82%, ${alpha * 0.30})`);
-      g.addColorStop(0.85, `hsla(${(h + 135) % 360},   80%, 84%, ${alpha * 0.08})`);
-      g.addColorStop(1,    `hsla(${(h + 180) % 360},   75%, 86%, 0)`);
+      g.addColorStop(0,    `hsla(${h % 360},            95%, 72%, ${alpha})`);
+      g.addColorStop(0.30, `hsla(${(h + 45)  % 360},   92%, 68%, ${alpha * 0.65})`);
+      g.addColorStop(0.60, `hsla(${(h + 90)  % 360},   88%, 65%, ${alpha * 0.30})`);
+      g.addColorStop(0.85, `hsla(${(h + 135) % 360},   85%, 62%, ${alpha * 0.08})`);
+      g.addColorStop(1,    `hsla(${(h + 180) % 360},   80%, 60%, 0)`);
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -82,8 +81,8 @@ export default function MouseEffect() {
     const animate = (time: number) => {
       ctx.globalCompositeOperation = 'source-over';
 
-      // Slowly fade everything back to white — creates the persistent swirl effect
-      ctx.fillStyle = 'rgba(255,255,255,0.006)';
+      // Slowly fade everything back to black — creates the persistent swirl effect
+      ctx.fillStyle = 'rgba(0,0,0,0.012)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       hue.current = (hue.current + 0.55) % 360;
