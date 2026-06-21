@@ -2,25 +2,27 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-interface Splash {
-  id: number;
-  x: number;
-  y: number;
-}
+interface Splash { id: number; x: number; y: number; }
 
-// Three rotating rainbow layers at different hue offsets and blur depths
-const LAYERS = [
-  { hueOffset: 0,   blur: 52, opacity: 0.72 },
-  { hueOffset: 120, blur: 32, opacity: 0.60 },
-  { hueOffset: 240, blur: 18, opacity: 0.50 },
+// Pastel smoke wisps — elongated, heavily blurred, long trailing lags
+const WISPS = [
+  { color: 'rgba(255,140,185,0.85)', w: 46, h: 275, lag: 0.145, blur: 40 },
+  { color: 'rgba(255,228,105,0.75)', w: 40, h: 240, lag: 0.088, blur: 34 },
+  { color: 'rgba(115,255,188,0.78)', w: 38, h: 218, lag: 0.056, blur: 36 },
+  { color: 'rgba(105,192,255,0.82)', w: 44, h: 252, lag: 0.036, blur: 42 },
+  { color: 'rgba(192,148,255,0.80)', w: 36, h: 228, lag: 0.108, blur: 31 },
+  { color: 'rgba(255,140,185,0.66)', w: 32, h: 190, lag: 0.022, blur: 28 },
+  { color: 'rgba(115,255,208,0.70)', w: 28, h: 168, lag: 0.013, blur: 24 },
+  { color: 'rgba(255,208,138,0.64)', w: 25, h: 150, lag: 0.031, blur: 21 },
+  { color: 'rgba(182,168,255,0.70)', w: 22, h: 136, lag: 0.006, blur: 19 },
+  { color: 'rgba(255,190,210,0.60)', w: 20, h: 118, lag: 0.042, blur: 17 },
 ];
 
 export default function MouseEffect() {
-  const layerRefs    = useRef<(HTMLDivElement | null)[]>([]);
-  const maskRef      = useRef<HTMLDivElement>(null);
-  const center       = useRef({ x: -800, y: -800 });
+  const wispRefs     = useRef<(HTMLDivElement | null)[]>([]);
+  const positions    = useRef(WISPS.map(() => ({ x: -800, y: -800 })));
+  const prevPos      = useRef(WISPS.map(() => ({ x: -800, y: -800 })));
   const mouse        = useRef({ x: -800, y: -800 });
-  const angleRef     = useRef(0);
   const rafRef       = useRef<number>();
   const fadeTimer    = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export default function MouseEffect() {
       clearTimeout(fadeTimer.current);
       fadeTimer.current = setTimeout(() => {
         if (containerRef.current) containerRef.current.style.opacity = '0';
-      }, 2500);
+      }, 3000);
     };
 
     const onClick = (e: MouseEvent) => {
@@ -43,40 +45,35 @@ export default function MouseEffect() {
     };
 
     const animate = () => {
-      // spring-follow cursor
-      center.current.x += (mouse.current.x - center.current.x) * 0.09;
-      center.current.y += (mouse.current.y - center.current.y) * 0.09;
-      const cx = center.current.x;
-      const cy = center.current.y;
+      const t = performance.now() * 0.001;
 
-      // continuously spin hue
-      angleRef.current = (angleRef.current + 1.1) % 360;
-      const a = angleRef.current;
+      WISPS.forEach((wisp, i) => {
+        const pos  = positions.current[i];
+        const prev = prevPos.current[i];
 
-      LAYERS.forEach((layer, i) => {
-        const el = layerRefs.current[i];
-        if (!el) return;
-        const h = (a + layer.hueOffset) % 360;
-        // full-spectrum conic gradient anchored to cursor center
-        el.style.background = `conic-gradient(
-          from ${h}deg at ${cx}px ${cy}px,
-          hsla(${h}        ,100%,72%,1),
-          hsla(${(h+51)%360} ,100%,72%,1),
-          hsla(${(h+102)%360},100%,72%,1),
-          hsla(${(h+153)%360},100%,72%,1),
-          hsla(${(h+204)%360},100%,72%,1),
-          hsla(${(h+255)%360},100%,72%,1),
-          hsla(${(h+306)%360},100%,72%,1),
-          hsla(${h}        ,100%,72%,1)
-        )`;
+        // gentle autonomous drift so wisps feel alive when cursor is still
+        const driftX = Math.sin(t * 0.35 + i * 1.1) * 16;
+        const driftY = Math.cos(t * 0.28 + i * 0.9) * 11;
+
+        const targetX = mouse.current.x + driftX;
+        const targetY = mouse.current.y + driftY;
+
+        // per-wisp travel direction → rotate wisp to align with its own flow
+        const vx    = pos.x - prev.x;
+        const vy    = pos.y - prev.y;
+        const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
+
+        prev.x = pos.x;
+        prev.y = pos.y;
+
+        pos.x += (targetX - pos.x) * wisp.lag;
+        pos.y += (targetY - pos.y) * wisp.lag;
+
+        const el = wispRefs.current[i];
+        if (el) {
+          el.style.transform = `translate(${pos.x - wisp.w / 2}px, ${pos.y - wisp.h / 2}px) rotate(${angle}deg)`;
+        }
       });
-
-      // elliptical radial mask keeps holographic glow around cursor only
-      const mask = `radial-gradient(ellipse 240px 200px at ${cx}px ${cy}px, black 20%, transparent 100%)`;
-      if (maskRef.current) {
-        maskRef.current.style.webkitMaskImage = mask;
-        (maskRef.current.style as CSSStyleDeclaration & { maskImage: string }).maskImage = mask;
-      }
 
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -95,21 +92,21 @@ export default function MouseEffect() {
 
   return (
     <>
-      {/* wave distortion filter — displaces the conic gradient into organic liquid waves */}
+      {/* gentle wave distortion — low scale so smoke stays soft, not jittery */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
         <defs>
-          <filter id="holo-wave" x="-30%" y="-30%" width="160%" height="160%">
+          <filter id="smoke-wave" x="-40%" y="-40%" width="180%" height="180%">
             <feTurbulence
               type="fractalNoise"
-              baseFrequency="0.014 0.009"
-              numOctaves="4"
-              seed="7"
+              baseFrequency="0.008 0.005"
+              numOctaves="5"
+              seed="11"
               result="noise"
             />
             <feDisplacementMap
               in="SourceGraphic"
               in2="noise"
-              scale="32"
+              scale="14"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -121,23 +118,24 @@ export default function MouseEffect() {
         ref={containerRef}
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
-        style={{ opacity: 0, transition: 'opacity 0.9s ease' }}
+        style={{ opacity: 0, transition: 'opacity 1.2s ease', filter: 'url(#smoke-wave)' }}
       >
-        {/* mask wrapper so the wave filter doesn't escape the ellipse */}
-        <div ref={maskRef} className="absolute inset-0" style={{ filter: 'url(#holo-wave)' }}>
-          {LAYERS.map((layer, i) => (
-            <div
-              key={i}
-              ref={(el) => { layerRefs.current[i] = el; }}
-              className="absolute inset-0"
-              style={{
-                filter:       `blur(${layer.blur}px)`,
-                opacity:      layer.opacity,
-                mixBlendMode: 'screen',
-              }}
-            />
-          ))}
-        </div>
+        {WISPS.map((wisp, i) => (
+          <div
+            key={i}
+            ref={(el) => { wispRefs.current[i] = el; }}
+            className="absolute top-0 left-0"
+            style={{
+              width:        wisp.w,
+              height:       wisp.h,
+              borderRadius: '50%',
+              background:   wisp.color,
+              filter:       `blur(${wisp.blur}px)`,
+              mixBlendMode: 'screen',
+              willChange:   'transform',
+            }}
+          />
+        ))}
       </div>
 
       {splashes.map((s) => (
