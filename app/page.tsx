@@ -71,51 +71,22 @@ export default function Page() {
                   transition={{ duration: 0.4 }}
                   className="text-center mt-5 mb-2"
                 >
-                  {/* Real photo + greeting side by side */}
-                  <div className="flex items-center justify-center gap-4 mb-3">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3, duration: 0.5, type: 'spring', stiffness: 180, damping: 22 }}
-                      className="relative flex-shrink-0"
-                      style={{
-                        width: 72, height: 72,
-                        borderRadius: '50%',
-                        overflow: 'hidden',
-                        border: '2px solid var(--accent)',
-                        boxShadow: '0 0 0 4px var(--accent-glow)',
-                      }}
+                  <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+                    Hey, I&apos;m Ana Flor{' '}
+                    <motion.span
+                      animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
+                      transition={{ delay: 0.8, duration: 1.2 }}
+                      style={{ display: 'inline-block', transformOrigin: '70% 70%' }}
                     >
-                      <Image
-                        src="/me.jpeg"
-                        alt="Ana Flor Delfin"
-                        fill
-                        sizes="72px"
-                        className="object-cover object-top"
-                        priority
-                      />
-                    </motion.div>
-
-                    <div className="text-left">
-                      <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        Hey, I&apos;m Ana Flor{' '}
-                        <motion.span
-                          animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
-                          transition={{ delay: 0.8, duration: 1.2 }}
-                          style={{ display: 'inline-block', transformOrigin: '70% 70%' }}
-                        >
-                          👋
-                        </motion.span>
-                      </h1>
-                      <p className="text-sm font-medium mt-0.5" style={{ color: 'var(--muted)' }}>
-                        AI-Powered Virtual Assistant{' '}
-                        <span style={{ color: 'var(--accent)' }}>·</span>{' '}
-                        Naval, Biliran PH
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--muted)', opacity: 0.7 }}>
+                      👋
+                    </motion.span>
+                  </h1>
+                  <p className="text-base font-medium" style={{ color: 'var(--muted)' }}>
+                    AI-Powered Virtual Assistant{' '}
+                    <span style={{ color: 'var(--accent)' }}>·</span>{' '}
+                    Naval, Biliran PH
+                  </p>
+                  <p className="text-sm mt-1.5 max-w-sm mx-auto" style={{ color: 'var(--muted)', opacity: 0.7 }}>
                     I cut turnaround by ~60% with AI automation.
                     Ask me anything below.
                   </p>
