@@ -17,6 +17,7 @@ export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputFocused, setInputFocused] = useState(false);
+  const [showMeCard, setShowMeCard] = useState(false);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, append, setMessages } = useChat({
     api: '/api/chat',
@@ -34,7 +35,8 @@ export default function Page() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleChipSelect = (msg: { role: 'user'; content: string }) => {
+  const handleChipSelect = (msg: { role: 'user'; content: string }, label?: string) => {
+    if (label === 'Me') setShowMeCard(true);
     append(msg);
     inputRef.current?.focus();
   };
@@ -130,7 +132,7 @@ export default function Page() {
                   className="mt-2 flex items-center gap-2"
                 >
                   <motion.button
-                    onClick={() => setMessages([])}
+                    onClick={() => { setMessages([]); setShowMeCard(false); }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-200"
@@ -154,6 +156,33 @@ export default function Page() {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto py-2 space-y-1">
+
+            {/* Me photo card — appears when the Me button is clicked */}
+            <AnimatePresence>
+              {showMeCard && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4, type: 'spring', stiffness: 200, damping: 24 }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl mb-2"
+                  style={{
+                    background: 'var(--avatar-bubble)',
+                    border: '1px solid var(--avatar-bubble-border)',
+                  }}
+                >
+                  <div style={{ width: 56, height: 56, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--accent)', flexShrink: 0 }}>
+                    <Image src="/me.jpeg" alt="Ana Flor Delfin" width={56} height={56} className="object-cover object-top" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Ana Flor Delfin</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--accent)' }}>AI-Powered Virtual Assistant</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>Naval, Biliran PH</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <AnimatePresence initial={false}>
               {messages.map((msg, i) => (
                 <ChatMessage
@@ -195,7 +224,7 @@ export default function Page() {
           <SuggestionChips onSelect={handleChipSelect} visible={!hasMessages} />
 
           {/* Quick action buttons — always visible */}
-          <QuickActions onSelect={handleChipSelect} />
+          <QuickActions onSelect={(msg, label) => handleChipSelect(msg, label)} />
 
           {/* Input bar */}
           <div className="py-3 pb-5">
