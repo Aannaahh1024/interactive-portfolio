@@ -24,6 +24,6 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Large source files (frames are in public/ which is committed)
+# Large source files (frames are served from public/avatar-frames/ which IS committed)
 avatar.mp4
-avatar-frames/
+/avatar-frames/
