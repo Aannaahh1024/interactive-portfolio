@@ -8,21 +8,20 @@ interface Splash {
   y: number;
 }
 
-// Blobs are close enough to merge when slow, stretch apart when fast — liquid behaviour
-const BLOBS = [
-  { color: '#00e5ff', w: 92, h: 112, lag: 0.14  },
-  { color: '#6366f1', w: 82, h: 100, lag: 0.085 },
-  { color: '#ec4899', w: 76, h: 94,  lag: 0.052 },
-  { color: '#fb923c', w: 70, h: 86,  lag: 0.075 },
-  { color: '#22c55e', w: 64, h: 80,  lag: 0.032 },
-  { color: '#a855f7', w: 58, h: 72,  lag: 0.019 },
-  { color: '#fbbf24', w: 50, h: 62,  lag: 0.044 },
+const COLORS = [
+  '#00e5ff', '#6366f1', '#ec4899',
+  '#fb923c', '#22c55e', '#a855f7',
+  '#fbbf24', '#ef4444',
 ];
+
+const COUNT  = 8;
+const RADIUS = 38; // orbit radius around cursor center
 
 export default function MouseEffect() {
   const blobRefs     = useRef<(HTMLDivElement | null)[]>([]);
-  const positions    = useRef(BLOBS.map(() => ({ x: -600, y: -600 })));
-  const prevPos      = useRef(BLOBS.map(() => ({ x: -600, y: -600 })));
+  const positions    = useRef(Array.from({ length: COUNT }, () => ({ x: -600, y: -600 })));
+  const center       = useRef({ x: -600, y: -600 }); // lags behind cursor
+  const angleRef     = useRef(0);
   const mouse        = useRef({ x: -600, y: -600 });
   const rafRef       = useRef<number>();
   const fadeTimer    = useRef<ReturnType<typeof setTimeout>>();
@@ -46,25 +45,33 @@ export default function MouseEffect() {
     };
 
     const animate = () => {
-      BLOBS.forEach((blob, i) => {
-        const pos  = positions.current[i];
-        const prev = prevPos.current[i];
+      // orbit center follows cursor with spring lag
+      center.current.x += (mouse.current.x - center.current.x) * 0.09;
+      center.current.y += (mouse.current.y - center.current.y) * 0.09;
 
-        const vx    = pos.x - prev.x;
-        const vy    = pos.y - prev.y;
-        const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
+      // continuously spin
+      angleRef.current += 0.032;
 
-        prev.x = pos.x;
-        prev.y = pos.y;
+      Array.from({ length: COUNT }).forEach((_, i) => {
+        const phase   = (i / COUNT) * Math.PI * 2;
+        const angle   = angleRef.current + phase;
+        // slight radius variation per blob so the swirl has depth
+        const r       = RADIUS + (i % 3) * 12;
+        const targetX = center.current.x + Math.cos(angle) * r;
+        const targetY = center.current.y + Math.sin(angle) * r;
 
-        pos.x += (mouse.current.x - pos.x) * blob.lag;
-        pos.y += (mouse.current.y - pos.y) * blob.lag;
+        const pos = positions.current[i];
+        // each blob also has its own spring lag for a fluid stretched look
+        const lag = 0.10 + (i % 3) * 0.04;
+        pos.x += (targetX - pos.x) * lag;
+        pos.y += (targetY - pos.y) * lag;
 
         const el = blobRefs.current[i];
         if (el) {
-          el.style.transform = `translate(${pos.x - blob.w / 2}px, ${pos.y - blob.h / 2}px) rotate(${angle}deg)`;
+          el.style.transform = `translate(${pos.x - 36}px, ${pos.y - 44}px)`;
         }
       });
+
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -82,23 +89,17 @@ export default function MouseEffect() {
 
   return (
     <>
-      {/*
-        Two-pass liquid filter:
-        1. feGaussianBlur softens and merges nearby blobs
-        2. feColorMatrix sharpens the alpha threshold — blobs that touch fuse into one liquid mass
-        3. feComposite "in" re-applies original blob colors through the merged liquid silhouette
-      */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
         <defs>
-          <filter id="liquid" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="13" result="blur" />
+          <filter id="liquid" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur" />
             <feColorMatrix
               in="blur"
               type="matrix"
               values="1 0 0 0 0
                       0 1 0 0 0
                       0 0 1 0 0
-                      0 0 0 26 -11"
+                      0 0 0 28 -12"
               result="goo"
             />
             <feComposite in="SourceGraphic" in2="goo" operator="in" />
@@ -112,17 +113,17 @@ export default function MouseEffect() {
         className="pointer-events-none fixed inset-0 z-0"
         style={{ opacity: 0, transition: 'opacity 0.8s ease', filter: 'url(#liquid)' }}
       >
-        {BLOBS.map((blob, i) => (
+        {COLORS.map((color, i) => (
           <div
             key={i}
             ref={(el) => { blobRefs.current[i] = el; }}
             className="absolute top-0 left-0"
             style={{
-              width:        blob.w,
-              height:       blob.h,
+              width:        72,
+              height:       88,
               borderRadius: '50%',
-              background:   blob.color,
-              opacity:      0.82,
+              background:   color,
+              opacity:      0.88,
               willChange:   'transform',
             }}
           />
