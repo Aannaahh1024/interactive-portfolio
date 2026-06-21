@@ -8,21 +8,19 @@ interface Splash {
   y: number;
 }
 
-const COLORS = [
-  '#00e5ff', '#6366f1', '#ec4899',
-  '#fb923c', '#22c55e', '#a855f7',
-  '#fbbf24', '#ef4444',
+// Three rotating rainbow layers at different hue offsets and blur depths
+const LAYERS = [
+  { hueOffset: 0,   blur: 52, opacity: 0.72 },
+  { hueOffset: 120, blur: 32, opacity: 0.60 },
+  { hueOffset: 240, blur: 18, opacity: 0.50 },
 ];
 
-const COUNT  = 8;
-const RADIUS = 38; // orbit radius around cursor center
-
 export default function MouseEffect() {
-  const blobRefs     = useRef<(HTMLDivElement | null)[]>([]);
-  const positions    = useRef(Array.from({ length: COUNT }, () => ({ x: -600, y: -600 })));
-  const center       = useRef({ x: -600, y: -600 }); // lags behind cursor
+  const layerRefs    = useRef<(HTMLDivElement | null)[]>([]);
+  const maskRef      = useRef<HTMLDivElement>(null);
+  const center       = useRef({ x: -800, y: -800 });
+  const mouse        = useRef({ x: -800, y: -800 });
   const angleRef     = useRef(0);
-  const mouse        = useRef({ x: -600, y: -600 });
   const rafRef       = useRef<number>();
   const fadeTimer    = useRef<ReturnType<typeof setTimeout>>();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,32 +43,40 @@ export default function MouseEffect() {
     };
 
     const animate = () => {
-      // orbit center follows cursor with spring lag
+      // spring-follow cursor
       center.current.x += (mouse.current.x - center.current.x) * 0.09;
       center.current.y += (mouse.current.y - center.current.y) * 0.09;
+      const cx = center.current.x;
+      const cy = center.current.y;
 
-      // continuously spin
-      angleRef.current += 0.032;
+      // continuously spin hue
+      angleRef.current = (angleRef.current + 1.1) % 360;
+      const a = angleRef.current;
 
-      Array.from({ length: COUNT }).forEach((_, i) => {
-        const phase   = (i / COUNT) * Math.PI * 2;
-        const angle   = angleRef.current + phase;
-        // slight radius variation per blob so the swirl has depth
-        const r       = RADIUS + (i % 3) * 12;
-        const targetX = center.current.x + Math.cos(angle) * r;
-        const targetY = center.current.y + Math.sin(angle) * r;
-
-        const pos = positions.current[i];
-        // each blob also has its own spring lag for a fluid stretched look
-        const lag = 0.10 + (i % 3) * 0.04;
-        pos.x += (targetX - pos.x) * lag;
-        pos.y += (targetY - pos.y) * lag;
-
-        const el = blobRefs.current[i];
-        if (el) {
-          el.style.transform = `translate(${pos.x - 36}px, ${pos.y - 44}px)`;
-        }
+      LAYERS.forEach((layer, i) => {
+        const el = layerRefs.current[i];
+        if (!el) return;
+        const h = (a + layer.hueOffset) % 360;
+        // full-spectrum conic gradient anchored to cursor center
+        el.style.background = `conic-gradient(
+          from ${h}deg at ${cx}px ${cy}px,
+          hsla(${h}        ,100%,72%,1),
+          hsla(${(h+51)%360} ,100%,72%,1),
+          hsla(${(h+102)%360},100%,72%,1),
+          hsla(${(h+153)%360},100%,72%,1),
+          hsla(${(h+204)%360},100%,72%,1),
+          hsla(${(h+255)%360},100%,72%,1),
+          hsla(${(h+306)%360},100%,72%,1),
+          hsla(${h}        ,100%,72%,1)
+        )`;
       });
+
+      // elliptical radial mask keeps holographic glow around cursor only
+      const mask = `radial-gradient(ellipse 240px 200px at ${cx}px ${cy}px, black 20%, transparent 100%)`;
+      if (maskRef.current) {
+        maskRef.current.style.webkitMaskImage = mask;
+        (maskRef.current.style as CSSStyleDeclaration & { maskImage: string }).maskImage = mask;
+      }
 
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -89,20 +95,24 @@ export default function MouseEffect() {
 
   return (
     <>
+      {/* wave distortion filter — displaces the conic gradient into organic liquid waves */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
         <defs>
-          <filter id="liquid" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur" />
-            <feColorMatrix
-              in="blur"
-              type="matrix"
-              values="1 0 0 0 0
-                      0 1 0 0 0
-                      0 0 1 0 0
-                      0 0 0 28 -12"
-              result="goo"
+          <filter id="holo-wave" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.014 0.009"
+              numOctaves="4"
+              seed="7"
+              result="noise"
             />
-            <feComposite in="SourceGraphic" in2="goo" operator="in" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="32"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
           </filter>
         </defs>
       </svg>
@@ -111,23 +121,23 @@ export default function MouseEffect() {
         ref={containerRef}
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
-        style={{ opacity: 0, transition: 'opacity 0.8s ease', filter: 'url(#liquid)' }}
+        style={{ opacity: 0, transition: 'opacity 0.9s ease' }}
       >
-        {COLORS.map((color, i) => (
-          <div
-            key={i}
-            ref={(el) => { blobRefs.current[i] = el; }}
-            className="absolute top-0 left-0"
-            style={{
-              width:        72,
-              height:       88,
-              borderRadius: '50%',
-              background:   color,
-              opacity:      0.88,
-              willChange:   'transform',
-            }}
-          />
-        ))}
+        {/* mask wrapper so the wave filter doesn't escape the ellipse */}
+        <div ref={maskRef} className="absolute inset-0" style={{ filter: 'url(#holo-wave)' }}>
+          {LAYERS.map((layer, i) => (
+            <div
+              key={i}
+              ref={(el) => { layerRefs.current[i] = el; }}
+              className="absolute inset-0"
+              style={{
+                filter:       `blur(${layer.blur}px)`,
+                opacity:      layer.opacity,
+                mixBlendMode: 'screen',
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       {splashes.map((s) => (
