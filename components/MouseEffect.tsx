@@ -1,143 +1,157 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 
 interface Splash { id: number; x: number; y: number; }
 
-// Pastel smoke wisps — elongated, heavily blurred, long trailing lags
-const WISPS = [
-  { color: 'rgba(255,140,185,0.85)', w: 46, h: 275, lag: 0.145, blur: 40 },
-  { color: 'rgba(255,228,105,0.75)', w: 40, h: 240, lag: 0.088, blur: 34 },
-  { color: 'rgba(115,255,188,0.78)', w: 38, h: 218, lag: 0.056, blur: 36 },
-  { color: 'rgba(105,192,255,0.82)', w: 44, h: 252, lag: 0.036, blur: 42 },
-  { color: 'rgba(192,148,255,0.80)', w: 36, h: 228, lag: 0.108, blur: 31 },
-  { color: 'rgba(255,140,185,0.66)', w: 32, h: 190, lag: 0.022, blur: 28 },
-  { color: 'rgba(115,255,208,0.70)', w: 28, h: 168, lag: 0.013, blur: 24 },
-  { color: 'rgba(255,208,138,0.64)', w: 25, h: 150, lag: 0.031, blur: 21 },
-  { color: 'rgba(182,168,255,0.70)', w: 22, h: 136, lag: 0.006, blur: 19 },
-  { color: 'rgba(255,190,210,0.60)', w: 20, h: 118, lag: 0.042, blur: 17 },
+// Blobs live on the left side of the viewport (cx 0–0.35).
+// They drift autonomously and shift slightly with mouse parallax.
+// The container mask fades them out toward the right so center/right content stays readable.
+const BLOBS = [
+  { cx: 0.11, cy: 0.28, color: 'rgba(255,140,185,0.52)', r: 540, amp: 88, freq: 0.00037, pf: 0.032 },
+  { cx: 0.27, cy: 0.63, color: 'rgba(195,150,255,0.48)', r: 480, amp: 66, freq: 0.00029, pf: 0.021 },
+  { cx: 0.06, cy: 0.74, color: 'rgba(115,235,190,0.44)', r: 435, amp: 74, freq: 0.00045, pf: 0.041 },
+  { cx: 0.20, cy: 0.10, color: 'rgba(108,196,255,0.48)', r: 500, amp: 92, freq: 0.00033, pf: 0.017 },
+  { cx: 0.03, cy: 0.49, color: 'rgba(255,228,108,0.43)', r: 405, amp: 60, freq: 0.00041, pf: 0.035 },
+  { cx: 0.33, cy: 0.38, color: 'rgba(255,190,140,0.40)', r: 360, amp: 52, freq: 0.00050, pf: 0.028 },
 ];
 
 export default function MouseEffect() {
-  const wispRefs     = useRef<(HTMLDivElement | null)[]>([]);
-  const positions    = useRef(WISPS.map(() => ({ x: -800, y: -800 })));
-  const prevPos      = useRef(WISPS.map(() => ({ x: -800, y: -800 })));
-  const mouse        = useRef({ x: -800, y: -800 });
-  const rafRef       = useRef<number>();
-  const fadeTimer    = useRef<ReturnType<typeof setTimeout>>();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
+  const blobRefs       = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef   = useRef<HTMLDivElement>(null);
+  const mouseNorm      = useRef({ x: 0.5, y: 0.5 }); // normalised 0-1
+  const smoothMouse    = useRef({ x: 0.5, y: 0.5 });
+  const rafRef         = useRef<number>();
   const [splashes, setSplashes] = useState<Splash[]>([]);
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
-      if (containerRef.current) containerRef.current.style.opacity = '1';
-      clearTimeout(fadeTimer.current);
-      fadeTimer.current = setTimeout(() => {
-        if (containerRef.current) containerRef.current.style.opacity = '0';
-      }, 3000);
-    };
-
     const onClick = (e: MouseEvent) => {
       const id = Date.now() + Math.random();
       setSplashes((p) => [...p, { id, x: e.clientX, y: e.clientY }]);
       setTimeout(() => setSplashes((p) => p.filter((s) => s.id !== id)), 800);
     };
+    window.addEventListener('click', onClick);
+    return () => window.removeEventListener('click', onClick);
+  }, []);
 
-    const animate = () => {
-      const t = performance.now() * 0.001;
+  useEffect(() => {
+    if (prefersReduced) return;
 
-      WISPS.forEach((wisp, i) => {
-        const pos  = positions.current[i];
-        const prev = prevPos.current[i];
+    const onMove = (e: MouseEvent) => {
+      mouseNorm.current = {
+        x: e.clientX / window.innerWidth,
+        y: e.clientY / window.innerHeight,
+      };
+    };
 
-        // gentle autonomous drift so wisps feel alive when cursor is still
-        const driftX = Math.sin(t * 0.35 + i * 1.1) * 16;
-        const driftY = Math.cos(t * 0.28 + i * 0.9) * 11;
+    const animate = (time: number) => {
+      // very slow lerp — creates the heavy, liquid lag feel
+      smoothMouse.current.x += (mouseNorm.current.x - smoothMouse.current.x) * 0.030;
+      smoothMouse.current.y += (mouseNorm.current.y - smoothMouse.current.y) * 0.030;
 
-        const targetX = mouse.current.x + driftX;
-        const targetY = mouse.current.y + driftY;
+      const W  = window.innerWidth;
+      const H  = window.innerHeight;
+      const mx = smoothMouse.current.x;
+      const my = smoothMouse.current.y;
 
-        // per-wisp travel direction → rotate wisp to align with its own flow
-        const vx    = pos.x - prev.x;
-        const vy    = pos.y - prev.y;
-        const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
+      BLOBS.forEach((blob, i) => {
+        const el = blobRefs.current[i];
+        if (!el) return;
 
-        prev.x = pos.x;
-        prev.y = pos.y;
+        // autonomous organic drift — each blob has a unique period and phase
+        const driftX = Math.sin(time * blob.freq + i * 1.25) * blob.amp;
+        const driftY = Math.cos(time * blob.freq * 0.78 + i * 0.95) * blob.amp * 0.72;
 
-        pos.x += (targetX - pos.x) * wisp.lag;
-        pos.y += (targetY - pos.y) * wisp.lag;
+        // parallax: mouse deviation from centre shifts each blob by a different factor
+        const pX = (mx - 0.5) * blob.pf * W;
+        const pY = (my - 0.5) * blob.pf * H;
 
-        const el = wispRefs.current[i];
-        if (el) {
-          el.style.transform = `translate(${pos.x - wisp.w / 2}px, ${pos.y - wisp.h / 2}px) rotate(${angle}deg)`;
-        }
+        // proximity scale — blob grows very slightly when cursor approaches
+        const bx   = blob.cx * W + driftX + pX;
+        const by   = blob.cy * H + driftY + pY;
+        const dist = Math.hypot(mx * W - bx, my * H - by);
+        const scale = 1 + Math.max(0, 1 - dist / 420) * 0.13;
+
+        const x = bx - (blob.r * scale) / 2;
+        const y = by - (blob.r * scale) / 2;
+
+        el.style.width     = `${blob.r * scale}px`;
+        el.style.height    = `${blob.r * scale}px`;
+        el.style.transform = `translate(${x}px, ${y}px)`;
       });
 
       rafRef.current = requestAnimationFrame(animate);
     };
 
-    rafRef.current = requestAnimationFrame(animate);
     window.addEventListener('mousemove', onMove, { passive: true });
-    window.addEventListener('click', onClick);
+    rafRef.current = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(rafRef.current!);
       window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('click', onClick);
-      clearTimeout(fadeTimer.current);
     };
-  }, []);
+  }, [prefersReduced]);
+
+  // reduced-motion: static, very subtle single gradient — no animation
+  if (prefersReduced) {
+    return (
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background: `
+            radial-gradient(ellipse 55% 70% at 8% 40%, rgba(255,140,185,0.14), transparent 70%),
+            radial-gradient(ellipse 40% 55% at 20% 75%, rgba(195,150,255,0.10), transparent 65%)
+          `,
+        }}
+      />
+    );
+  }
 
   return (
     <>
-      {/* gentle wave distortion — low scale so smoke stays soft, not jittery */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
         <defs>
-          <filter id="smoke-wave" x="-40%" y="-40%" width="180%" height="180%">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.008 0.005"
-              numOctaves="5"
-              seed="11"
-              result="noise"
-            />
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="noise"
-              scale="14"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
+          {/* Very gentle fractal noise warp — keeps edges organic, not jittery */}
+          <filter id="smoke-warp" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.004" numOctaves="5" seed="9" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
 
+      {/* Blob container — fades to transparent toward the right so content stays readable */}
       <div
         ref={containerRef}
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
-        style={{ opacity: 0, transition: 'opacity 1.2s ease', filter: 'url(#smoke-wave)' }}
+        style={{
+          filter: 'url(#smoke-warp)',
+          WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 28%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0) 72%)',
+          maskImage:       'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.75) 28%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0) 72%)',
+        }}
       >
-        {WISPS.map((wisp, i) => (
+        {BLOBS.map((blob, i) => (
           <div
             key={i}
-            ref={(el) => { wispRefs.current[i] = el; }}
+            ref={(el) => { blobRefs.current[i] = el; }}
             className="absolute top-0 left-0"
             style={{
-              width:        wisp.w,
-              height:       wisp.h,
+              width:        blob.r,
+              height:       blob.r,
               borderRadius: '50%',
-              background:   wisp.color,
-              filter:       `blur(${wisp.blur}px)`,
+              background:   blob.color,
+              filter:       `blur(${Math.round(blob.r * 0.14)}px)`,
               mixBlendMode: 'screen',
-              willChange:   'transform',
+              willChange:   'transform, width, height',
             }}
           />
         ))}
       </div>
 
+      {/* Click splash rings */}
       {splashes.map((s) => (
         <div
           key={s.id}
@@ -152,10 +166,8 @@ export default function MouseEffect() {
                 key={ring}
                 className="splash-ring absolute rounded-full"
                 style={{
-                  width:  d,
-                  height: d,
-                  left:   -(d / 2),
-                  top:    -(d / 2),
+                  width:  d, height: d,
+                  left:   -(d / 2), top: -(d / 2),
                   border: '2px solid var(--accent)',
                   animationDelay: `${ring * 0.08}s`,
                 }}
