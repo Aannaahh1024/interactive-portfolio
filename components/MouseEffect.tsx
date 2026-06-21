@@ -8,15 +8,15 @@ interface Splash {
   y: number;
 }
 
+// Blobs are close enough to merge when slow, stretch apart when fast — liquid behaviour
 const BLOBS = [
-  { color: 'rgba(0, 229, 255, 0.90)',   w: 52,  h: 140, lag: 0.18 },
-  { color: 'rgba(99, 102, 241, 0.85)',  w: 46,  h: 122, lag: 0.11 },
-  { color: 'rgba(236, 72, 153, 0.85)',  w: 42,  h: 108, lag: 0.072 },
-  { color: 'rgba(251, 146, 60, 0.78)',  w: 38,  h: 94,  lag: 0.046 },
-  { color: 'rgba(34, 197, 94, 0.72)',   w: 34,  h: 80,  lag: 0.028 },
-  { color: 'rgba(168, 85, 247, 0.80)',  w: 30,  h: 68,  lag: 0.017 },
-  { color: 'rgba(251, 191, 36, 0.70)',  w: 26,  h: 55,  lag: 0.010 },
-  { color: 'rgba(239, 68, 68, 0.65)',   w: 22,  h: 44,  lag: 0.006 },
+  { color: '#00e5ff', w: 92, h: 112, lag: 0.14  },
+  { color: '#6366f1', w: 82, h: 100, lag: 0.085 },
+  { color: '#ec4899', w: 76, h: 94,  lag: 0.052 },
+  { color: '#fb923c', w: 70, h: 86,  lag: 0.075 },
+  { color: '#22c55e', w: 64, h: 80,  lag: 0.032 },
+  { color: '#a855f7', w: 58, h: 72,  lag: 0.019 },
+  { color: '#fbbf24', w: 50, h: 62,  lag: 0.044 },
 ];
 
 export default function MouseEffect() {
@@ -50,7 +50,6 @@ export default function MouseEffect() {
         const pos  = positions.current[i];
         const prev = prevPos.current[i];
 
-        // per-blob velocity → rotation angle so each blob points along its own travel direction
         const vx    = pos.x - prev.x;
         const vy    = pos.y - prev.y;
         const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
@@ -83,11 +82,26 @@ export default function MouseEffect() {
 
   return (
     <>
+      {/*
+        Two-pass liquid filter:
+        1. feGaussianBlur softens and merges nearby blobs
+        2. feColorMatrix sharpens the alpha threshold — blobs that touch fuse into one liquid mass
+        3. feComposite "in" re-applies original blob colors through the merged liquid silhouette
+      */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden>
         <defs>
-          <filter id="fluid-distort" x="-40%" y="-40%" width="180%" height="180%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.022 0.014" numOctaves="3" seed="5" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
+          <filter id="liquid" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="13" result="blur" />
+            <feColorMatrix
+              in="blur"
+              type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 26 -11"
+              result="goo"
+            />
+            <feComposite in="SourceGraphic" in2="goo" operator="in" />
           </filter>
         </defs>
       </svg>
@@ -96,7 +110,7 @@ export default function MouseEffect() {
         ref={containerRef}
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
-        style={{ opacity: 0, transition: 'opacity 0.8s ease', filter: 'url(#fluid-distort)' }}
+        style={{ opacity: 0, transition: 'opacity 0.8s ease', filter: 'url(#liquid)' }}
       >
         {BLOBS.map((blob, i) => (
           <div
@@ -108,8 +122,7 @@ export default function MouseEffect() {
               height:       blob.h,
               borderRadius: '50%',
               background:   blob.color,
-              filter:       `blur(${Math.round(blob.w * 0.55)}px)`,
-              mixBlendMode: 'screen',
+              opacity:      0.82,
               willChange:   'transform',
             }}
           />
