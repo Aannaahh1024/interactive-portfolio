@@ -25,8 +25,13 @@ const CENTRE_MASK =
 export default function MouseEffect() {
   const prefersReduced = useReducedMotion();
   const blobRefs       = useRef<(HTMLDivElement | null)[]>([]);
+  const cursorRef      = useRef<HTMLDivElement>(null);  // cursor-follow rainbow layer
   const mouseNorm      = useRef({ x: 0.5, y: 0.5 });
   const smoothMouse    = useRef({ x: 0.5, y: 0.5 });
+  const rawMouse       = useRef({ x: -400, y: -400 }); // pixel coords for cursor layer
+  const smoothRaw      = useRef({ x: -400, y: -400 });
+  const hueRef         = useRef(0);
+  const fadeTimer      = useRef<ReturnType<typeof setTimeout>>();
   const blendMode      = useRef<string>('multiply');
   const rafRef         = useRef<number>();
   const [splashes, setSplashes] = useState<Splash[]>([]);
@@ -46,10 +51,14 @@ export default function MouseEffect() {
     if (prefersReduced) return;
 
     const onMove = (e: MouseEvent) => {
-      mouseNorm.current = {
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      };
+      mouseNorm.current = { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight };
+      rawMouse.current  = { x: e.clientX, y: e.clientY };
+      // show cursor layer, schedule fade
+      if (cursorRef.current) cursorRef.current.style.opacity = '1';
+      clearTimeout(fadeTimer.current);
+      fadeTimer.current = setTimeout(() => {
+        if (cursorRef.current) cursorRef.current.style.opacity = '0';
+      }, 2000);
     };
 
     const animate = (time: number) => {
@@ -68,6 +77,22 @@ export default function MouseEffect() {
       const my = smoothMouse.current.y;
       const W  = window.innerWidth;
       const H  = window.innerHeight;
+
+      // --- cursor-following rainbow gradient ---
+      smoothRaw.current.x += (rawMouse.current.x - smoothRaw.current.x) * 0.12;
+      smoothRaw.current.y += (rawMouse.current.y - smoothRaw.current.y) * 0.12;
+      hueRef.current = (hueRef.current + 0.8) % 360;
+      const h = hueRef.current;
+      const cx2 = smoothRaw.current.x;
+      const cy2 = smoothRaw.current.y;
+      if (cursorRef.current) {
+        cursorRef.current.style.background = `radial-gradient(180px circle at ${cx2}px ${cy2}px,
+          hsla(${h}        ,85%,68%,0.50) 0%,
+          hsla(${(h+45)%360},85%,68%,0.36) 25%,
+          hsla(${(h+90)%360},85%,68%,0.22) 50%,
+          hsla(${(h+135)%360},85%,68%,0.08) 75%,
+          transparent 100%)`;
+      }
 
       BLOBS.forEach((blob, i) => {
         const el = blobRefs.current[i];
@@ -102,6 +127,7 @@ export default function MouseEffect() {
     return () => {
       cancelAnimationFrame(rafRef.current!);
       window.removeEventListener('mousemove', onMove);
+      clearTimeout(fadeTimer.current);
     };
   }, [prefersReduced]);
 
@@ -134,6 +160,14 @@ export default function MouseEffect() {
           </filter>
         </defs>
       </svg>
+
+      {/* Cursor-following rainbow — fades after 2 s of inactivity */}
+      <div
+        ref={cursorRef}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-[1]"
+        style={{ opacity: 0, transition: 'opacity 0.7s ease', mixBlendMode: 'multiply' }}
+      />
 
       {/* Donut-masked blob container: transparent centre, colour builds toward edges */}
       <div
