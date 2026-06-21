@@ -209,7 +209,7 @@ const PROJECTS: Project[] = [
     tags: ['GoHighLevel Conversation AI', 'Knowledge Base', 'Prompt Engineering'],
     accentColor: '#a78bfa',
     Preview: ChatbotPreview,
-    caseStudyLabel: 'Full case study on Notion',
+    caseStudyLabel: 'Full project on Notion',
   },
   {
     id: 3,
@@ -225,7 +225,7 @@ const PROJECTS: Project[] = [
     tags: ['Notion', 'Notion AI', 'Pipeline Management'],
     accentColor: '#34d399',
     Preview: NotionPipelinePreview,
-    caseStudyLabel: 'Full case study on Notion',
+    caseStudyLabel: 'Full project on Notion',
   },
 ];
 
@@ -325,7 +325,7 @@ export default function ProjectCards() {
             AI-Assisted Client Reply Management
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: 'var(--muted)' }}>
-            High-ticket coaching · ChatGPT + Claude · Cut reply time, kept tone on-brand · Case study on Notion
+            High-ticket coaching · ChatGPT + Claude · Cut reply time, kept tone on-brand · Project on Notion
           </p>
         </div>
       </motion.div>
