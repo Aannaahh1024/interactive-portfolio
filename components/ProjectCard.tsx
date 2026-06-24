@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Clock, Zap, TrendingUp, MessageSquare, Users, FileText } from 'lucide-react';
+import { Clock, Zap, TrendingUp, MessageSquare, Users, FileText, MousePointer } from 'lucide-react';
 
 /* ─── SVG Preview Components ─────────────────────────────────── */
 
@@ -159,6 +159,78 @@ function NotionPipelinePreview() {
   );
 }
 
+function SalesFunnelPreview() {
+  return (
+    <svg viewBox="0 0 280 145" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="145" fill="#060614" />
+      {/* Header bar */}
+      <rect x="0" y="0" width="280" height="28" fill="#0d0d1e" />
+      <circle cx="12" cy="14" r="4" fill="#ff5f57" />
+      <circle cx="24" cy="14" r="4" fill="#febc2e" />
+      <circle cx="36" cy="14" r="4" fill="#28c840" />
+      <text x="68" y="18" fill="#555" fontSize="7" fontFamily="monospace">GoHighLevel — Funnel Builder</text>
+
+      {/* Card 1: Sales Page */}
+      <rect x="14" y="35" width="56" height="72" rx="4" fill="#0d0d1e" stroke="#f59e0b" strokeWidth="0.8" />
+      <rect x="18" y="39" width="48" height="3.5" rx="1" fill="#2a2010" />
+      <rect x="18" y="44" width="36" height="3" rx="1" fill="#1a1608" />
+      <rect x="18" y="49" width="42" height="3" rx="1" fill="#1a1608" />
+      <rect x="18" y="57" width="48" height="10" rx="2" fill="#f59e0b" />
+      <text x="42" y="63.5" fill="#000" fontSize="5" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">GET ACCESS — $47</text>
+      <rect x="18" y="71" width="48" height="5" rx="1" fill="#1a1608" />
+      <text x="42" y="75.5" fill="#666" fontSize="4" fontFamily="sans-serif" textAnchor="middle">Secure · 30-Day Guarantee</text>
+      <text x="42" y="103" fill="#f59e0b" fontSize="6" fontFamily="monospace" textAnchor="middle">Sales Page</text>
+
+      {/* Arrow 1 */}
+      <line x1="70" y1="71" x2="79" y2="71" stroke="#2a2a2a" strokeWidth="1" />
+      <polygon points="77,68 77,74 82,71" fill="#2a2a2a" />
+
+      {/* Card 2: Order Form */}
+      <rect x="82" y="35" width="56" height="72" rx="4" fill="#0d0d1e" stroke="#818cf8" strokeWidth="0.8" />
+      <text x="110" y="50" fill="#e0e0ff" fontSize="6.5" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Place Order</text>
+      <rect x="86" y="54" width="48" height="6.5" rx="2" fill="#1a1a2e" />
+      <text x="89" y="58.5" fill="#555" fontSize="4.5" fontFamily="sans-serif">Full Name</text>
+      <rect x="86" y="63" width="48" height="6.5" rx="2" fill="#1a1a2e" />
+      <text x="89" y="67.5" fill="#555" fontSize="4.5" fontFamily="sans-serif">Email Address</text>
+      <rect x="86" y="72" width="48" height="9" rx="2" fill="#818cf820" stroke="#818cf840" strokeWidth="0.5" />
+      <text x="110" y="77.5" fill="#818cf8" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Place My Order</text>
+      <text x="110" y="103" fill="#818cf8" fontSize="6" fontFamily="monospace" textAnchor="middle">Order Form</text>
+
+      {/* Arrow 2 */}
+      <line x1="138" y1="71" x2="147" y2="71" stroke="#2a2a2a" strokeWidth="1" />
+      <polygon points="145,68 145,74 150,71" fill="#2a2a2a" />
+
+      {/* Card 3: Upsell */}
+      <rect x="151" y="35" width="56" height="72" rx="4" fill="#0d0d1e" stroke="#f97316" strokeWidth="0.8" />
+      <rect x="151" y="35" width="56" height="12" rx="2" fill="#ef444418" />
+      <text x="179" y="43" fill="#ef4444" fontSize="5.5" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">WAIT — Special Offer</text>
+      <text x="179" y="57" fill="#f0f0f0" fontSize="6" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">1-on-1 Strategy</text>
+      <text x="179" y="65" fill="#f0f0f0" fontSize="6" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Session</text>
+      <text x="179" y="73" fill="#f97316" fontSize="6" fontFamily="monospace" textAnchor="middle">$297 → $97</text>
+      <rect x="155" y="77" width="48" height="10" rx="2" fill="#f97316" />
+      <text x="179" y="83.5" fill="#000" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Add to Order — $97</text>
+      <text x="179" y="103" fill="#f97316" fontSize="6" fontFamily="monospace" textAnchor="middle">Upsell Page</text>
+
+      {/* Arrow 3 */}
+      <line x1="207" y1="71" x2="216" y2="71" stroke="#2a2a2a" strokeWidth="1" />
+      <polygon points="214,68 214,74 219,71" fill="#2a2a2a" />
+
+      {/* Card 4: Thank You */}
+      <rect x="220" y="35" width="46" height="72" rx="4" fill="#0d0d1e" stroke="#34d399" strokeWidth="0.8" />
+      <text x="243" y="53" fill="#facc15" fontSize="13" fontFamily="sans-serif" textAnchor="middle">&#127881;</text>
+      <text x="243" y="63" fill="#f0f0f0" fontSize="6" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">You&apos;re in!</text>
+      <text x="243" y="71" fill="#888" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Check your email</text>
+      <rect x="224" y="75" width="38" height="9" rx="2" fill="#f59e0b18" stroke="#f59e0b40" strokeWidth="0.5" />
+      <text x="243" y="80.5" fill="#f59e0b" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Access Course</text>
+      <text x="243" y="103" fill="#34d399" fontSize="6" fontFamily="monospace" textAnchor="middle">Thank You</text>
+
+      {/* Bottom stat */}
+      <rect x="14" y="110" width="252" height="12" rx="3" fill="#0d1224" />
+      <text x="18" y="118.5" fill="#f59e0b" fontSize="6" fontFamily="monospace">4-page funnel · End-to-end connected · GoHighLevel Funnel Builder</text>
+    </svg>
+  );
+}
+
 /* ─── Data ─────────────────────────────────────────────────────── */
 
 interface Metric {
@@ -226,6 +298,22 @@ const PROJECTS: Project[] = [
     accentColor: '#34d399',
     Preview: NotionPipelinePreview,
     caseStudyLabel: 'Full project on Notion',
+  },
+  {
+    id: 4,
+    title: 'Complete Sales Funnel Build',
+    category: 'Online Business Coach · Digital Course',
+    description:
+      'Built a full 4-page sales funnel from scratch for a $47 mini-course — Sales Page, Order Form, Upsell ($97 strategy session), and Thank You Page. All pages connected end-to-end with copy, buttons, product setup, and payment configuration.',
+    metrics: [
+      { icon: <MousePointer size={11} />, label: '4-page funnel built' },
+      { icon: <Zap size={11} />, label: 'End-to-end connected' },
+      { icon: <TrendingUp size={11} />, label: '$47 + $97 upsell flow' },
+    ],
+    tags: ['GoHighLevel', 'Funnel Builder', 'Order Form', 'Upsell Page'],
+    accentColor: '#f59e0b',
+    Preview: SalesFunnelPreview,
+    caseStudyLabel: 'Screenshots on request',
   },
 ];
 

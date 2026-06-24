@@ -35,6 +35,10 @@ export default function Page() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (isLoading) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [isLoading, messages.at(-1)?.content]);
+
   const handleChipSelect = (msg: { role: 'user'; content: string }, label?: string) => {
     if (label === 'Me') setShowMeCard(true);
     append(msg);
@@ -174,15 +178,18 @@ export default function Page() {
                   className="flex justify-start mb-4"
                 >
                   <div
-                    className="px-4 py-3 rounded-2xl rounded-bl-sm avatar-bubble-glow flex items-center gap-1.5"
+                    className="px-4 py-3 rounded-2xl rounded-bl-sm avatar-bubble-glow flex items-center gap-2"
                     style={{
                       background: 'var(--avatar-bubble)',
                       border: '1px solid var(--avatar-bubble-border)',
                     }}
                   >
-                    <span className="typing-dot w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-                    <span className="typing-dot w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-                    <span className="typing-dot w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
+                    <span className="text-xs" style={{ color: 'var(--muted)' }}>Ana is typing</span>
+                    <div className="flex items-center gap-1">
+                      <span className="typing-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                      <span className="typing-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                      <span className="typing-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                    </div>
                   </div>
                 </motion.div>
               )}
