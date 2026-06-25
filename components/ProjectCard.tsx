@@ -498,7 +498,8 @@ const PROJECTS: Project[] = [
     tags: ['Make.com', 'Google Forms', 'Google Sheets', 'Slack', 'Gmail'],
     accentColor: '#22c55e',
     Preview: MakePreview,
-    caseStudyLabel: 'Blueprint available on request',
+    caseStudyLabel: 'Live scenario on Make.com',
+    caseStudyUrl: 'https://us2.make.com/public/shared-scenario/mPKlKwOUYow/integration-google-forms-google-sheets',
   },
 ];
 

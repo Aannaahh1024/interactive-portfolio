@@ -102,7 +102,7 @@ Screenshots available on request.
 Problem solved: Built a zero-manual inquiry routing system. Every form submission is automatically logged, classified by request type, and handled without touching a thing.
 What I did: Connected Google Forms to Google Sheets via Make.com, then set up a Router with 3 conditional branches (Coaching Inquiry, Partnership Pitch, General Question). Each branch fires a Slack alert to the team and sends a personalized Gmail confirmation to the requester, all within seconds. Built-in validation ensures incomplete submissions never break the workflow.
 Tools: Make.com (Router + Conditional Filters), Google Forms, Google Sheets, Slack, Gmail.
-Workflow blueprint available on request.
+Live scenario available on Make.com: https://us2.make.com/public/shared-scenario/mPKlKwOUYow/integration-google-forms-google-sheets
 
 ## NEXT STEPS FOR INTERESTED PEOPLE
 
