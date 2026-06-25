@@ -14,47 +14,59 @@ function LeadCapturePreview() {
       <circle cx="12" cy="14" r="4" fill="#ff5f57" />
       <circle cx="24" cy="14" r="4" fill="#febc2e" />
       <circle cx="36" cy="14" r="4" fill="#28c840" />
-      <text x="90" y="18" fill="#555" fontSize="7" fontFamily="monospace">GoHighLevel — Workflow Builder</text>
+      <text x="68" y="18" fill="#555" fontSize="7" fontFamily="monospace">GoHighLevel — Workflow Builder</text>
 
-      {/* Step 1 */}
-      <rect x="14" y="38" width="66" height="30" rx="4" fill="#0f1a2e" stroke="#00E5FF" strokeWidth="0.8" />
-      <text x="22" y="51" fill="#00E5FF" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Lead Opts In</text>
-      <text x="22" y="61" fill="#555" fontSize="5.5" fontFamily="sans-serif">Form / Ad / DM</text>
+      {/* ── Left: actual workflow steps ── */}
 
-      {/* Arrow */}
-      <line x1="80" y1="53" x2="96" y2="53" stroke="#333" strokeWidth="1" />
-      <polygon points="94,50 94,56 99,53" fill="#333" />
+      {/* Step 1: Form Submitted */}
+      <rect x="14" y="33" width="104" height="18" rx="3" fill="#0a1a0a" stroke="#22c55e" strokeWidth="0.7" />
+      <text x="19" y="42" fill="#22c55e" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Form Submitted</text>
+      <text x="19" y="48.5" fill="#444" fontSize="5.5" fontFamily="sans-serif">Form: &quot;Get 15% Off Your ...&quot;</text>
+      <line x1="66" y1="51" x2="66" y2="57" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Step 2 */}
-      <rect x="99" y="38" width="66" height="30" rx="4" fill="#0f1a2e" stroke="#a78bfa" strokeWidth="0.8" />
-      <text x="107" y="51" fill="#a78bfa" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Auto-Tag</text>
-      <text x="107" y="61" fill="#555" fontSize="5.5" fontFamily="sans-serif">Source + Interest</text>
+      {/* Step 2: Luma Lead (tag) */}
+      <rect x="14" y="57" width="104" height="13" rx="3" fill="#0d0d20" stroke="#818cf8" strokeWidth="0.7" />
+      <text x="19" y="66.5" fill="#818cf8" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Luma Lead</text>
+      <line x1="66" y1="70" x2="66" y2="76" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Arrow */}
-      <line x1="165" y1="53" x2="181" y2="53" stroke="#333" strokeWidth="1" />
-      <polygon points="179,50 179,56 184,53" fill="#333" />
+      {/* Step 3: Email */}
+      <rect x="14" y="76" width="104" height="13" rx="3" fill="#0a1a0a" stroke="#22c55e" strokeWidth="0.7" />
+      <text x="19" y="85.5" fill="#22c55e" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Email</text>
+      <line x1="66" y1="89" x2="66" y2="95" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Step 3 */}
-      <rect x="184" y="38" width="80" height="30" rx="4" fill="#0f1a2e" stroke="#34d399" strokeWidth="0.8" />
-      <text x="192" y="51" fill="#34d399" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Email Sequence</text>
-      <text x="192" y="61" fill="#555" fontSize="5.5" fontFamily="sans-serif">Welcome → Nurture</text>
+      {/* Step 4: Wait */}
+      <rect x="14" y="95" width="104" height="13" rx="3" fill="#150a24" stroke="#a78bfa" strokeWidth="0.7" />
+      <text x="19" y="104.5" fill="#a78bfa" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Wait</text>
+      <line x1="66" y1="108" x2="66" y2="114" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Email sequence preview */}
-      {[0, 1, 2].map((i) => (
-        <g key={i}>
-          <rect x="14" y={80 + i * 18} width="250" height="13" rx="3" fill="#0d1224" />
-          <rect x="18" y={83 + i * 18} width="6" height="6" rx="1"
-            fill={['#00E5FF', '#a78bfa', '#34d399'][i]} opacity="0.7" />
-          <text x="28" y={90 + i * 18} fill="#aaa" fontSize="6" fontFamily="monospace">
-            {['Email 1: Welcome + Brand intro (sent immediately)', 'Email 2: Social proof + FAQ (Day 3)', 'Email 3: CTA — Book a free consult (Day 7)'][i]}
-          </text>
-          <text x="238" y={90 + i * 18} fill="#34d399" fontSize="5.5" fontFamily="monospace">✓ Auto</text>
-        </g>
-      ))}
+      {/* Step 5: Email 2 */}
+      <rect x="14" y="114" width="104" height="13" rx="3" fill="#0a1a0a" stroke="#22c55e" strokeWidth="0.7" />
+      <text x="19" y="123.5" fill="#22c55e" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Email</text>
+      <line x1="66" y1="127" x2="66" y2="132" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Bottom stat */}
-      <rect x="14" y="132" width="110" height="10" rx="3" fill="#00E5FF11" />
-      <text x="18" y="139.5" fill="#00E5FF" fontSize="6" fontFamily="monospace">100% automated · Zero manual steps</text>
+      {/* END node */}
+      <circle cx="66" cy="137" r="5" fill="#1a1a1a" stroke="#3a3a3a" strokeWidth="0.7" />
+      <text x="66" y="139.5" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">END</text>
+
+      {/* ── Right: detail panel ── */}
+      <line x1="130" y1="33" x2="130" y2="142" stroke="#1a1a2e" strokeWidth="0.5" />
+
+      <text x="138" y="45" fill="#00E5FF" fontSize="7.5" fontFamily="sans-serif" fontWeight="bold">Lead Capture Flow</text>
+      <text x="138" y="54" fill="#555" fontSize="5.5" fontFamily="sans-serif">DTC Skincare · GoHighLevel</text>
+
+      <line x1="138" y1="59" x2="267" y2="59" stroke="#1a1a2e" strokeWidth="0.5" />
+
+      <text x="138" y="69" fill="#777" fontSize="6" fontFamily="sans-serif">Form opt-in triggers workflow</text>
+      <text x="138" y="79" fill="#777" fontSize="6" fontFamily="sans-serif">→ Tag &quot;Luma Lead&quot; applied</text>
+      <text x="138" y="89" fill="#777" fontSize="6" fontFamily="sans-serif">→ Welcome email sent immediately</text>
+      <text x="138" y="99" fill="#777" fontSize="6" fontFamily="sans-serif">→ Wait step (delay)</text>
+      <text x="138" y="109" fill="#777" fontSize="6" fontFamily="sans-serif">→ Follow-up email auto-sent</text>
+      <text x="138" y="119" fill="#777" fontSize="6" fontFamily="sans-serif">→ Workflow ends</text>
+
+      <line x1="138" y1="124" x2="267" y2="124" stroke="#1a1a2e" strokeWidth="0.5" />
+
+      <rect x="138" y="128" width="128" height="11" rx="2" fill="#00E5FF11" />
+      <text x="142" y="136" fill="#00E5FF" fontSize="6" fontFamily="monospace">100% automated · Zero manual steps</text>
     </svg>
   );
 }
