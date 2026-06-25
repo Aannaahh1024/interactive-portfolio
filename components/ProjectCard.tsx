@@ -110,63 +110,73 @@ function ChatbotPreview() {
 }
 
 function NotionPipelinePreview() {
-  const stages = ['Showing Scheduled', 'Offer Made', 'Under Contract', 'Closed'];
-  const stageColors = ['#00E5FF', '#a78bfa', '#f59e0b', '#34d399'];
-
   return (
     <svg viewBox="0 0 280 145" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
       <rect width="280" height="145" fill="#060614" />
-      {/* Header */}
+      {/* Header bar */}
       <rect x="0" y="0" width="280" height="28" fill="#0d0d1e" />
       <circle cx="12" cy="14" r="4" fill="#ff5f57" />
       <circle cx="24" cy="14" r="4" fill="#febc2e" />
       <circle cx="36" cy="14" r="4" fill="#28c840" />
-      <text x="85" y="18" fill="#555" fontSize="7" fontFamily="monospace">Notion — Buyer Pipeline (AI-Powered)</text>
+      <text x="68" y="18" fill="#555" fontSize="7" fontFamily="monospace">Notion — Client Pipeline Tracker</text>
 
-      {/* AI summary badge */}
-      <rect x="14" y="33" width="250" height="16" rx="4" fill="#34d39915" stroke="#34d399" strokeWidth="0.6" />
-      <text x="18" y="44" fill="#34d399" fontSize="6.5" fontFamily="monospace">
-        ✦ Notion AI summarized today&apos;s meeting → 3 action items created automatically
-      </text>
+      {/* Table header row */}
+      <rect x="14" y="31" width="252" height="11" fill="#0d1224" />
+      <text x="17" y="39" fill="#555" fontSize="5.5" fontFamily="sans-serif" fontWeight="bold">CLIENT NAME</text>
+      <text x="82" y="39" fill="#555" fontSize="5.5" fontFamily="sans-serif" fontWeight="bold">STAGE</text>
+      <text x="140" y="39" fill="#555" fontSize="5.5" fontFamily="sans-serif" fontWeight="bold">LAST CONTACT</text>
+      <text x="202" y="39" fill="#555" fontSize="5.5" fontFamily="sans-serif" fontWeight="bold">NEXT ACTION</text>
 
-      {/* Kanban columns */}
-      {stages.map((stage, col) => (
-        <g key={stage}>
-          <rect x={14 + col * 66} y={54} width={60} height={10} rx="2" fill={`${stageColors[col]}22`} />
-          <text x={18 + col * 66} y={62} fill={stageColors[col]} fontSize="5.5" fontFamily="monospace" fontWeight="bold">
-            {stage.toUpperCase()}
-          </text>
-          {/* Cards in column */}
-          {[0, 1].map((row) => (
-            col * 2 + row < 6 ? (
-              <g key={row}>
-                <rect
-                  x={14 + col * 66}
-                  y={68 + row * 22}
-                  width={60}
-                  height={18}
-                  rx="3"
-                  fill="#0d1224"
-                  stroke={`${stageColors[col]}33`}
-                  strokeWidth="0.6"
-                />
-                <text x={19 + col * 66} y={77 + row * 22} fill="#888" fontSize="5.5" fontFamily="sans-serif">
-                  {['The Santos', 'Rivera Fam', 'J. Mendoza', 'Cruz Family', 'A. Reyes', 'M. Tan'][col * 2 + row]}
-                </text>
-                <text x={19 + col * 66} y={83 + row * 22} fill={stageColors[col]} fontSize="5" fontFamily="monospace">
-                  {['Jun 23', 'Jun 25', 'Jun 24 ✓', 'Pending', 'Done ✓', 'Jul 2'][col * 2 + row]}
-                </text>
-              </g>
-            ) : null
-          ))}
-        </g>
-      ))}
+      {/* Column dividers */}
+      <line x1="78" y1="31" x2="78" y2="90" stroke="#1a1a2e" strokeWidth="0.5" />
+      <line x1="135" y1="31" x2="135" y2="90" stroke="#1a1a2e" strokeWidth="0.5" />
+      <line x1="197" y1="31" x2="197" y2="90" stroke="#1a1a2e" strokeWidth="0.5" />
 
-      {/* Action items */}
-      <rect x="14" y="116" width="250" height="10" rx="3" fill="#0d1224" />
-      <text x="18" y="123.5" fill="#666" fontSize="6" fontFamily="monospace">
-        📋 Action items: Follow up Santos · Send offer to Rivera · Schedule walkthrough for Mendoza
-      </text>
+      {/* Row 1: Tan Family — Showing */}
+      <line x1="14" y1="42" x2="266" y2="42" stroke="#1a1a2e" strokeWidth="0.5" />
+      <text x="17" y="51" fill="#ccc" fontSize="6" fontFamily="sans-serif">Tan Family</text>
+      <rect x="81" y="44" width="34" height="10" rx="3" fill="#00E5FF18" />
+      <text x="83" y="51.5" fill="#00E5FF" fontSize="5.5" fontFamily="sans-serif">Showing</text>
+      <text x="139" y="51" fill="#666" fontSize="5.5" fontFamily="sans-serif">Jun 18, 2026</text>
+      <text x="201" y="51" fill="#666" fontSize="5.5" fontFamily="sans-serif">Send 3 new listings</text>
+
+      {/* Row 2: Reyes-Cruz — New Lead */}
+      <line x1="14" y1="55" x2="266" y2="55" stroke="#1a1a2e" strokeWidth="0.5" />
+      <text x="17" y="64" fill="#ccc" fontSize="6" fontFamily="sans-serif">Reyes-Cruz</text>
+      <rect x="81" y="57" width="42" height="10" rx="3" fill="#f59e0b18" />
+      <text x="83" y="64.5" fill="#f59e0b" fontSize="5.5" fontFamily="sans-serif">New Lead</text>
+      <text x="139" y="64" fill="#666" fontSize="5.5" fontFamily="sans-serif">Jun 15, 2026</text>
+      <text x="201" y="64" fill="#666" fontSize="5.5" fontFamily="sans-serif">Schedule intro call</text>
+
+      {/* Row 3: Mendoza — Offer */}
+      <line x1="14" y1="68" x2="266" y2="68" stroke="#1a1a2e" strokeWidth="0.5" />
+      <text x="17" y="77" fill="#ccc" fontSize="6" fontFamily="sans-serif">Mendoza</text>
+      <rect x="81" y="70" width="26" height="10" rx="3" fill="#a78bfa18" />
+      <text x="83" y="77.5" fill="#a78bfa" fontSize="5.5" fontFamily="sans-serif">Offer</text>
+      <text x="139" y="77" fill="#666" fontSize="5.5" fontFamily="sans-serif">Jun 17, 2026</text>
+      <text x="201" y="77" fill="#666" fontSize="5.5" fontFamily="sans-serif">Follow up counter-offer</text>
+
+      {/* Row 4: Santos — Closed */}
+      <line x1="14" y1="81" x2="266" y2="81" stroke="#1a1a2e" strokeWidth="0.5" />
+      <text x="17" y="90" fill="#ccc" fontSize="6" fontFamily="sans-serif">Santos</text>
+      <rect x="81" y="83" width="30" height="10" rx="3" fill="#34d39918" />
+      <text x="83" y="90.5" fill="#34d399" fontSize="5.5" fontFamily="sans-serif">Closed</text>
+      <text x="139" y="90" fill="#666" fontSize="5.5" fontFamily="sans-serif">Jun 10, 2026</text>
+      <text x="201" y="90" fill="#666" fontSize="5.5" fontFamily="sans-serif">Send closing gift</text>
+
+      {/* Divider */}
+      <line x1="14" y1="95" x2="266" y2="95" stroke="#1a1a2e" strokeWidth="1" />
+
+      {/* AI Meeting Notes section */}
+      <text x="14" y="105" fill="#34d399" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">AI-Summarized Meeting Notes</text>
+      <circle cx="18" cy="114" r="3" fill="#a78bfa" />
+      <text x="26" y="116" fill="#666" fontSize="5.5" fontFamily="sans-serif">Raw: &quot;Met with Tan family. 3BR Lahug, ~8M. Follow up Thursday.&quot;</text>
+      <circle cx="18" cy="124" r="3" fill="#34d399" />
+      <text x="26" y="126" fill="#b0f0d8" fontSize="5.5" fontFamily="sans-serif">AI: Client · 3BR ~P8M · Pre-approved · Action: 3 listings by Fri</text>
+
+      {/* Stat bar */}
+      <rect x="14" y="131" width="252" height="11" rx="2" fill="#34d39911" />
+      <text x="18" y="139" fill="#34d399" fontSize="6" fontFamily="monospace">4 clients tracked · Notion AI auto-summarized meeting notes</text>
     </svg>
   );
 }
@@ -368,7 +378,7 @@ const PROJECTS: Project[] = [
     accentColor: '#34d399',
     Preview: NotionPipelinePreview,
     caseStudyLabel: 'Full project on Notion',
-    caseStudyUrl: '',
+    caseStudyUrl: 'https://precious-gymnast-805.notion.site/Notion-AI-Client-Pipeline-Tracker-Real-Estate-3855273f5fc58197812bd4811cb2717d',
   },
   {
     id: 4,
