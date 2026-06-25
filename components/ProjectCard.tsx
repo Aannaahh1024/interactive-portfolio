@@ -398,7 +398,8 @@ const PROJECTS: Project[] = [
     tags: ['GoHighLevel', 'Funnel Builder', 'Order Form', 'Upsell Page'],
     accentColor: '#f59e0b',
     Preview: SalesFunnelPreview,
-    caseStudyLabel: 'Screenshots on request',
+    caseStudyLabel: 'View live sales page',
+    caseStudyUrl: 'https://sites.leadconnectorhq.com/preview/oMJEAg33NVpqO2OGVJAw?notrack=true',
   },
 ];
 
