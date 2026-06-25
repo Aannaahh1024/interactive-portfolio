@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CHIPS = [
   { label: 'Show me your best projects', emoji: '🚀' },
   { label: 'What tools do you use?', emoji: '🛠️' },
+  { label: 'Why should I hire you?', emoji: '💼' },
   { label: 'How can we collaborate?', emoji: '🤝' },
   { label: 'Tell me a fun fact', emoji: '✨' },
 ];

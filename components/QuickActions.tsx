@@ -6,9 +6,9 @@ import { FolderOpen, Zap, Mail, Smile } from 'lucide-react';
 
 const ACTIONS = [
   { label: 'Me',       photo: '/me.jpeg',  message: 'Tell me about yourself — who is Ana Flor?' },
-  { label: 'Projects', Icon: FolderOpen,   message: 'Show me your best projects.' },
-  { label: 'Skills',   Icon: Zap,          message: 'What skills and tools do you use?' },
-  { label: 'Contact',  Icon: Mail,         message: 'How can I contact you?' },
+  { label: 'Work',     Icon: FolderOpen,   message: 'Show me your best projects.' },
+  { label: 'Toolkit',  Icon: Zap,          message: 'What skills and tools do you use?' },
+  { label: 'Hire Me',  Icon: Mail,         message: 'How can I contact you or hire you?' },
   { label: 'Fun',      Icon: Smile,        message: 'Tell me a fun fact about yourself!' },
 ] as const;
 
@@ -40,7 +40,7 @@ export default function QuickActions({ onSelect }: Props) {
         >
           {'photo' in action ? (
             <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid var(--accent)', flexShrink: 0 }}>
-              <Image src={action.photo} alt="Ana Flor" width={24} height={24} className="object-cover object-top" />
+              <Image src={action.photo} alt="" width={24} height={24} className="object-cover object-top" />
             </div>
           ) : (
             <action.Icon size={12} style={{ color: 'var(--accent)' }} />

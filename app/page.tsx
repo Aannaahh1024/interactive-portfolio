@@ -19,7 +19,7 @@ export default function Page() {
   const [inputFocused, setInputFocused] = useState(false);
   const [showMeCard, setShowMeCard] = useState(false);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, append, setMessages } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, append, setMessages } = useChat({
     api: '/api/chat',
   });
 
@@ -122,7 +122,7 @@ export default function Page() {
                     Back
                   </motion.button>
                   <p className="text-xs font-medium tracking-wide" style={{ color: 'var(--accent)' }}>
-                    Ana Flor · AI-Powered Virtual Assistant
+                    Ana Flor · AI Automation Specialist
                   </p>
                 </motion.div>
               )}
@@ -190,6 +190,29 @@ export default function Page() {
                       <span className="typing-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
                       <span className="typing-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
                     </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Error fallback — shown if the AI API fails */}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex justify-start mb-4"
+                >
+                  <div
+                    className="px-4 py-3 rounded-2xl rounded-bl-sm text-xs"
+                    style={{
+                      background: 'var(--surface)',
+                      border: '1px solid var(--border-color)',
+                      color: 'var(--muted)',
+                    }}
+                  >
+                    Something went wrong connecting to Ana&apos;s avatar. Please try again in a moment.
                   </div>
                 </motion.div>
               )}
