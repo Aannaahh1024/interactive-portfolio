@@ -409,6 +409,7 @@ const PROJECTS: Project[] = [
       { label: 'Sales Page', url: 'https://sites.leadconnectorhq.com/preview/oMJEAg33NVpqO2OGVJAw?notrack=true' },
       { label: 'Order Page', url: 'https://sites.leadconnectorhq.com/preview/jpa2oHV1lYKYX4qtJoHd?notrack=true' },
       { label: 'Upsell Page', url: 'https://sites.leadconnectorhq.com/preview/6ZQj8tiY9M5kMXE0oi0B?notrack=true' },
+      { label: 'Thank You Page', url: 'https://sites.leadconnectorhq.com/preview/hhRO8juTWBDTX3gad0bY?notrack=true' },
     ],
   },
 ];
