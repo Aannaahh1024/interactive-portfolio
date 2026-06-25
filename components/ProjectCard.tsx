@@ -322,7 +322,7 @@ const PROJECTS: Project[] = [
     accentColor: '#00E5FF',
     Preview: LeadCapturePreview,
     caseStudyLabel: 'Walkthrough on Loom',
-    caseStudyUrl: '',
+    caseStudyUrl: 'https://www.loom.com/share/763523f3d08049dd8ca84eca1c8ae29f',
   },
   {
     id: 2,
