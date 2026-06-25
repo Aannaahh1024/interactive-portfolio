@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Clock, Zap, TrendingUp, MessageSquare, Users, FileText, MousePointer } from 'lucide-react';
+import { Clock, Zap, TrendingUp, MessageSquare, Users, FileText, MousePointer, GitBranch } from 'lucide-react';
 
 /* ─── SVG Preview Components ─────────────────────────────────── */
 
@@ -295,6 +295,78 @@ function ClientReplyPreview() {
   );
 }
 
+function MakePreview() {
+  return (
+    <svg viewBox="0 0 280 145" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="145" fill="#060614" />
+      {/* Header bar */}
+      <rect x="0" y="0" width="280" height="28" fill="#0d0d1e" />
+      <circle cx="12" cy="14" r="4" fill="#ff5f57" />
+      <circle cx="24" cy="14" r="4" fill="#febc2e" />
+      <circle cx="36" cy="14" r="4" fill="#28c840" />
+      <text x="68" y="18" fill="#555" fontSize="7" fontFamily="monospace">Make.com — Multi-Branch Automation</text>
+
+      {/* Google Forms node */}
+      <circle cx="28" cy="80" r="12" fill="#7c3aed" />
+      <text x="28" y="78" fill="white" fontSize="7" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">G</text>
+      <text x="28" y="86" fill="rgba(255,255,255,0.8)" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Forms</text>
+      <text x="28" y="96" fill="#555" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Watch</text>
+      <line x1="40" y1="80" x2="50" y2="80" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="2,2" />
+
+      {/* Google Sheets node */}
+      <circle cx="62" cy="80" r="12" fill="#16a34a" />
+      <text x="62" y="78" fill="white" fontSize="7" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">G</text>
+      <text x="62" y="86" fill="rgba(255,255,255,0.8)" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Sheets</text>
+      <text x="62" y="96" fill="#555" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Add row</text>
+      <line x1="74" y1="80" x2="86" y2="80" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="2,2" />
+
+      {/* Router node */}
+      <circle cx="98" cy="80" r="12" fill="#22c55e" />
+      <text x="98" y="84" fill="white" fontSize="11" fontFamily="sans-serif" textAnchor="middle">{'→'}</text>
+      <text x="98" y="96" fill="#555" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Router</text>
+
+      {/* Branch lines from router to Slack circles */}
+      <line x1="110" y1="80" x2="159" y2="46" stroke="#2a2a2a" strokeWidth="0.8" strokeDasharray="3,2" />
+      <line x1="110" y1="80" x2="159" y2="80" stroke="#2a2a2a" strokeWidth="0.8" strokeDasharray="3,2" />
+      <line x1="110" y1="80" x2="159" y2="114" stroke="#2a2a2a" strokeWidth="0.8" strokeDasharray="3,2" />
+
+      {/* Branch 1: Coaching (y=46) */}
+      <text x="112" y="42" fill="#22c55e" fontSize="5.5" fontFamily="monospace">1st Coaching</text>
+      <circle cx="168" cy="46" r="9" fill="#4a1d96" />
+      <text x="168" y="50" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">S</text>
+      <line x1="177" y1="46" x2="215" y2="46" stroke="#2a2a2a" strokeWidth="0.8" strokeDasharray="2,2" />
+      <circle cx="224" cy="46" r="9" fill="#dc2626" />
+      <text x="224" y="50" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">M</text>
+      <text x="168" y="58" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Slack</text>
+      <text x="224" y="58" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Gmail</text>
+
+      {/* Branch 2: Partnership (y=80) */}
+      <text x="112" y="76" fill="#22c55e" fontSize="5.5" fontFamily="monospace">2nd Partnership</text>
+      <circle cx="168" cy="80" r="9" fill="#4a1d96" />
+      <text x="168" y="84" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">S</text>
+      <line x1="177" y1="80" x2="215" y2="80" stroke="#2a2a2a" strokeWidth="0.8" strokeDasharray="2,2" />
+      <circle cx="224" cy="80" r="9" fill="#dc2626" />
+      <text x="224" y="84" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">M</text>
+      <text x="168" y="92" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Slack</text>
+      <text x="224" y="92" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Gmail</text>
+
+      {/* Branch 3: General Question (y=114) */}
+      <text x="112" y="110" fill="#22c55e" fontSize="5.5" fontFamily="monospace">3rd General Q.</text>
+      <circle cx="168" cy="114" r="9" fill="#4a1d96" />
+      <text x="168" y="118" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">S</text>
+      <line x1="177" y1="114" x2="215" y2="114" stroke="#2a2a2a" strokeWidth="0.8" strokeDasharray="2,2" />
+      <circle cx="224" cy="114" r="9" fill="#dc2626" />
+      <text x="224" y="118" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">M</text>
+      <text x="168" y="126" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Slack</text>
+      <text x="224" y="126" fill="#555" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">Gmail</text>
+
+      {/* Bottom stat strip */}
+      <rect x="14" y="132" width="252" height="11" rx="2" fill="#22c55e11" />
+      <text x="18" y="140" fill="#22c55e" fontSize="6" fontFamily="monospace">3 branches · Slack alert + email out in seconds · Zero manual sorting</text>
+    </svg>
+  );
+}
+
 /* ─── Data ─────────────────────────────────────────────────────── */
 
 interface Metric {
@@ -411,6 +483,22 @@ const PROJECTS: Project[] = [
       { label: 'Upsell Page', url: 'https://sites.leadconnectorhq.com/preview/6ZQj8tiY9M5kMXE0oi0B?notrack=true' },
       { label: 'Thank You Page', url: 'https://sites.leadconnectorhq.com/preview/hhRO8juTWBDTX3gad0bY?notrack=true' },
     ],
+  },
+  {
+    id: 5,
+    title: 'Automated Lead Intake & Multi-Branch Notifications',
+    category: 'Online Course Creator · Consultant',
+    description:
+      'Built an end-to-end inquiry system that logs every form submission, routes it by request type (coaching, partnership, or general), fires a Slack alert to the team, and sends a personalized confirmation email to the requester. All in seconds, with zero manual sorting.',
+    metrics: [
+      { icon: <GitBranch size={11} />, label: '3 routing branches' },
+      { icon: <Zap size={11} />, label: 'Instant Slack + email' },
+      { icon: <TrendingUp size={11} />, label: 'Zero manual sorting' },
+    ],
+    tags: ['Make.com', 'Google Forms', 'Google Sheets', 'Slack', 'Gmail'],
+    accentColor: '#22c55e',
+    Preview: MakePreview,
+    caseStudyLabel: 'Blueprint available on request',
   },
 ];
 
