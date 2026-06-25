@@ -231,6 +231,44 @@ function SalesFunnelPreview() {
   );
 }
 
+function ClientReplyPreview() {
+  return (
+    <svg viewBox="0 0 280 145" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="145" fill="#060614" />
+      {/* Header bar */}
+      <rect x="0" y="0" width="280" height="28" fill="#0d0d1e" />
+      <circle cx="12" cy="14" r="4" fill="#ff5f57" />
+      <circle cx="24" cy="14" r="4" fill="#febc2e" />
+      <circle cx="36" cy="14" r="4" fill="#28c840" />
+      <text x="60" y="18" fill="#555" fontSize="7" fontFamily="monospace">Notion — AI-Assisted Client Reply Mgmt</text>
+      {/* Page title */}
+      <text x="14" y="40" fill="#e0e0ff" fontSize="8" fontFamily="sans-serif" fontWeight="bold">AI-Assisted Client Reply Management</text>
+      <text x="14" y="50" fill="#555" fontSize="6" fontFamily="sans-serif">High-Ticket Coaching · ChatGPT / Claude</text>
+      {/* Divider */}
+      <line x1="14" y1="55" x2="266" y2="55" stroke="#1a1a2e" strokeWidth="1" />
+      {/* Example 1 */}
+      <text x="14" y="64" fill="#a0a0c0" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Example 1 — Discovery Call Inquiry</text>
+      <circle cx="18" cy="73" r="3" fill="#ef4444" />
+      <text x="26" y="75" fill="#666" fontSize="6" fontFamily="sans-serif">Raw: saw your ad, what&apos;s included, at $8K/mo stage</text>
+      <circle cx="18" cy="83" r="3" fill="#a78bfa" />
+      <text x="26" y="85" fill="#666" fontSize="6" fontFamily="sans-serif">AI: 1:1 calls + roadmap + direct access — $4,500 / 3mo</text>
+      <circle cx="18" cy="93" r="3" fill="#34d399" />
+      <text x="26" y="95" fill="#b0f0d8" fontSize="6" fontFamily="sans-serif">Final: warm, specific, ends with discovery call CTA</text>
+      {/* Divider */}
+      <line x1="14" y1="102" x2="266" y2="102" stroke="#1a1a2e" strokeWidth="1" />
+      {/* Example 2 */}
+      <text x="14" y="111" fill="#a0a0c0" fontSize="6.5" fontFamily="sans-serif" fontWeight="bold">Example 2 — Refund Complaint</text>
+      <circle cx="18" cy="120" r="3" fill="#ef4444" />
+      <text x="26" y="122" fill="#666" fontSize="6" fontFamily="sans-serif">Raw: paid for VIP, only 1 call — wants refund or dispute</text>
+      <circle cx="18" cy="130" r="3" fill="#34d399" />
+      <text x="26" y="132" fill="#b0f0d8" fontSize="6" fontFamily="sans-serif">Final: acknowledged, booked 2 sessions, offered resolution</text>
+      {/* Stat bar */}
+      <rect x="14" y="137" width="252" height="7" rx="2" fill="#a78bfa18" />
+      <text x="18" y="142.5" fill="#a78bfa" fontSize="5.5" fontFamily="monospace">3 scenarios · Prompt engineering · ChatGPT + Claude AI</text>
+    </svg>
+  );
+}
+
 /* ─── Data ─────────────────────────────────────────────────────── */
 
 interface Metric {
@@ -252,6 +290,23 @@ interface Project {
 }
 
 const PROJECTS: Project[] = [
+  {
+    id: 0,
+    title: 'AI-Assisted Client Reply Management',
+    category: 'High-Ticket Coaching',
+    description:
+      'Drafted and refined client communications for a premium coaching business — covering discovery calls, refund complaints, and partnership inquiries. Each reply was AI-drafted then tone-matched to sound warm, premium, and on-brand.',
+    metrics: [
+      { icon: <MessageSquare size={11} />, label: '3 scenarios documented' },
+      { icon: <Zap size={11} />, label: 'Reply time cut significantly' },
+      { icon: <TrendingUp size={11} />, label: 'Tone kept on-brand' },
+    ],
+    tags: ['ChatGPT', 'Claude AI', 'Prompt Engineering'],
+    accentColor: '#a78bfa',
+    Preview: ClientReplyPreview,
+    caseStudyLabel: 'Full project on Notion',
+    caseStudyUrl: 'https://precious-gymnast-805.notion.site/AI-Assisted-Client-Reply-Management-High-Ticket-Coaching-3855273f5fc58110a312d67280728ec8',
+  },
   {
     id: 1,
     title: 'Automated Lead Capture & Follow-Up',
@@ -412,36 +467,6 @@ export default function ProjectCards() {
         </motion.div>
       ))}
 
-      {/* 4th case study — compact mention */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35, duration: 0.3 }}
-        className="rounded-xl px-4 py-3 flex items-center gap-3"
-        style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border-color)',
-        }}
-      >
-        <span className="text-lg">✍️</span>
-        <div>
-          <p className="text-xs font-semibold" style={{ color: 'var(--foreground)' }}>
-            AI-Assisted Client Reply Management
-          </p>
-          <p className="text-[11px] mt-0.5" style={{ color: 'var(--muted)' }}>
-            High-ticket coaching · ChatGPT + Claude · Cut reply time, kept tone on-brand ·{' '}
-            <a
-              href="https://precious-gymnast-805.notion.site/AI-Assisted-Client-Reply-Management-High-Ticket-Coaching-3855273f5fc58110a312d67280728ec8"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-colors duration-150"
-              style={{ color: 'var(--accent)', textDecoration: 'none' }}
-            >
-              View on Notion ↗
-            </a>
-          </p>
-        </div>
-      </motion.div>
     </div>
   );
 }
