@@ -302,6 +302,11 @@ interface Metric {
   label: string;
 }
 
+interface ProjectLink {
+  label: string;
+  url: string;
+}
+
 interface Project {
   id: number;
   title: string;
@@ -313,6 +318,7 @@ interface Project {
   Preview: React.FC;
   caseStudyLabel: string;
   caseStudyUrl?: string;
+  links?: ProjectLink[];
 }
 
 const PROJECTS: Project[] = [
@@ -398,8 +404,12 @@ const PROJECTS: Project[] = [
     tags: ['GoHighLevel', 'Funnel Builder', 'Order Form', 'Upsell Page'],
     accentColor: '#f59e0b',
     Preview: SalesFunnelPreview,
-    caseStudyLabel: 'View live sales page',
-    caseStudyUrl: 'https://sites.leadconnectorhq.com/preview/oMJEAg33NVpqO2OGVJAw?notrack=true',
+    caseStudyLabel: 'Funnel pages',
+    links: [
+      { label: 'Sales Page', url: 'https://sites.leadconnectorhq.com/preview/oMJEAg33NVpqO2OGVJAw?notrack=true' },
+      { label: 'Order Page', url: 'https://sites.leadconnectorhq.com/preview/jpa2oHV1lYKYX4qtJoHd?notrack=true' },
+      { label: 'Upsell Page', url: 'https://sites.leadconnectorhq.com/preview/6ZQj8tiY9M5kMXE0oi0B?notrack=true' },
+    ],
   },
 ];
 
@@ -471,7 +481,28 @@ export default function ProjectCards() {
                   </span>
                 ))}
               </div>
-              {project.caseStudyUrl ? (
+              {project.links ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {project.links.map(({ label, url }) => (
+                    <a
+                      key={label}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-mono px-2 py-0.5 rounded transition-opacity duration-150 hover:opacity-100"
+                      style={{
+                        color: project.accentColor,
+                        opacity: 0.85,
+                        textDecoration: 'none',
+                        background: `${project.accentColor}12`,
+                        border: `1px solid ${project.accentColor}30`,
+                      }}
+                    >
+                      ✦ {label} ↗
+                    </a>
+                  ))}
+                </div>
+              ) : project.caseStudyUrl ? (
                 <a
                   href={project.caseStudyUrl}
                   target="_blank"
