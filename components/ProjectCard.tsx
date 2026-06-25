@@ -248,6 +248,7 @@ interface Project {
   accentColor: string;
   Preview: React.FC;
   caseStudyLabel: string;
+  caseStudyUrl?: string;
 }
 
 const PROJECTS: Project[] = [
@@ -266,6 +267,7 @@ const PROJECTS: Project[] = [
     accentColor: '#00E5FF',
     Preview: LeadCapturePreview,
     caseStudyLabel: 'Walkthrough on Loom',
+    caseStudyUrl: '',
   },
   {
     id: 2,
@@ -282,6 +284,7 @@ const PROJECTS: Project[] = [
     accentColor: '#a78bfa',
     Preview: ChatbotPreview,
     caseStudyLabel: 'Full project on Notion',
+    caseStudyUrl: '',
   },
   {
     id: 3,
@@ -298,6 +301,7 @@ const PROJECTS: Project[] = [
     accentColor: '#34d399',
     Preview: NotionPipelinePreview,
     caseStudyLabel: 'Full project on Notion',
+    caseStudyUrl: '',
   },
   {
     id: 4,
@@ -385,12 +389,24 @@ export default function ProjectCards() {
                   </span>
                 ))}
               </div>
-              <span
-                className="text-[10px] font-mono"
-                style={{ color: project.accentColor, opacity: 0.65 }}
-              >
-                ✦ {project.caseStudyLabel}
-              </span>
+              {project.caseStudyUrl ? (
+                <a
+                  href={project.caseStudyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] font-mono transition-opacity duration-150 hover:opacity-100"
+                  style={{ color: project.accentColor, opacity: 0.7, textDecoration: 'none' }}
+                >
+                  ✦ {project.caseStudyLabel} ↗
+                </a>
+              ) : (
+                <span
+                  className="text-[10px] font-mono"
+                  style={{ color: project.accentColor, opacity: 0.55 }}
+                >
+                  ✦ {project.caseStudyLabel}
+                </span>
+              )}
             </div>
           </div>
         </motion.div>
@@ -413,7 +429,16 @@ export default function ProjectCards() {
             AI-Assisted Client Reply Management
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: 'var(--muted)' }}>
-            High-ticket coaching · ChatGPT + Claude · Cut reply time, kept tone on-brand · Project on Notion
+            High-ticket coaching · ChatGPT + Claude · Cut reply time, kept tone on-brand ·{' '}
+            <a
+              href="https://precious-gymnast-805.notion.site/AI-Assisted-Client-Reply-Management-High-Ticket-Coaching-3855273f5fc58110a312d67280728ec8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors duration-150"
+              style={{ color: 'var(--accent)', textDecoration: 'none' }}
+            >
+              View on Notion ↗
+            </a>
           </p>
         </div>
       </motion.div>
