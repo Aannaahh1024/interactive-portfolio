@@ -75,36 +75,40 @@ function ChatbotPreview() {
   return (
     <svg viewBox="0 0 280 145" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
       <rect width="280" height="145" fill="#060614" />
-      {/* Header */}
+      {/* Header bar */}
       <rect x="0" y="0" width="280" height="28" fill="#0d0d1e" />
       <circle cx="12" cy="14" r="4" fill="#ff5f57" />
       <circle cx="24" cy="14" r="4" fill="#febc2e" />
       <circle cx="36" cy="14" r="4" fill="#28c840" />
-      <text x="80" y="18" fill="#555" fontSize="7" fontFamily="monospace">GHL Conversation AI — Med-Spa Bot</text>
+      <text x="68" y="18" fill="#555" fontSize="7" fontFamily="monospace">GoHighLevel — AI Chatbot · Cosmetics Clinic</text>
 
-      {/* Bot name + online */}
-      <circle cx="20" cy="46" r="9" fill="#a78bfa22" stroke="#a78bfa" strokeWidth="0.8" />
-      <text x="16" y="49" fill="#a78bfa" fontSize="7" fontFamily="sans-serif">AI</text>
-      <text x="34" y="42" fill="#f0f0f0" fontSize="7.5" fontFamily="sans-serif" fontWeight="bold">Glow Clinic Assistant</text>
-      <circle cx="34" cy="49" r="3" fill="#34d399" />
-      <text x="40" y="52" fill="#34d399" fontSize="6" fontFamily="sans-serif">Online 24 / 7</text>
+      {/* "Test Your Bot" title strip */}
+      <rect x="0" y="28" width="280" height="18" fill="#0d0d20" />
+      <text x="16" y="40" fill="#e0e0ff" fontSize="8" fontFamily="sans-serif" fontWeight="bold">✦  Test Your Bot</text>
+      <rect x="254" y="31" width="12" height="12" rx="3" fill="#1a1a2e" stroke="#333" strokeWidth="0.5" />
+      <text x="260" y="40" fill="#555" fontSize="8" fontFamily="sans-serif" textAnchor="middle">↺</text>
 
-      {/* Customer message */}
-      <rect x="14" y="60" width="145" height="17" rx="7" fill="#1a1a2e" />
-      <text x="21" y="72" fill="#bbb" fontSize="6.5" fontFamily="sans-serif">How much is a lip filler session?</text>
+      {/* User "hello" bubble — blue, right-aligned */}
+      <rect x="208" y="50" width="58" height="18" rx="9" fill="#2563eb" />
+      <text x="237" y="62" fill="#ffffff" fontSize="8" fontFamily="sans-serif" textAnchor="middle">hello</text>
 
-      {/* Bot response */}
-      <rect x="60" y="82" width="206" height="28" rx="7" fill="#a78bfa18" stroke="#a78bfa" strokeWidth="0.5" />
-      <text x="68" y="93" fill="#c4b5fd" fontSize="6.5" fontFamily="sans-serif">Lip fillers start at ₱8,500 for 1ml 💋</text>
-      <text x="68" y="104" fill="#c4b5fd" fontSize="6.5" fontFamily="sans-serif">Book online or DM us to reserve your slot!</text>
+      {/* AI Bot label */}
+      <text x="34" y="78" fill="#777" fontSize="6" fontFamily="sans-serif">AI Bot</text>
 
-      {/* 2nd customer message */}
-      <rect x="14" y="115" width="110" height="14" rx="6" fill="#1a1a2e" />
-      <text x="21" y="125" fill="#bbb" fontSize="6.5" fontFamily="sans-serif">What are your clinic hours?</text>
+      {/* Bot sparkle icon + green online dot */}
+      <circle cx="21" cy="88" r="8" fill="#1a1a2e" stroke="#818cf8" strokeWidth="0.6" />
+      <text x="21" y="91.5" fill="#a78bfa" fontSize="9" fontFamily="sans-serif" textAnchor="middle">✦</text>
+      <circle cx="27" cy="94" r="2.5" fill="#22c55e" stroke="#060614" strokeWidth="1" />
+
+      {/* AI Bot response bubble */}
+      <rect x="34" y="80" width="232" height="48" rx="10" fill="#0d1228" stroke="#818cf820" strokeWidth="0.5" />
+      <text x="44" y="93" fill="#c8c8f0" fontSize="6.5" fontFamily="sans-serif">Hey there! What can I help you with today?</text>
+      <text x="44" y="104" fill="#c8c8f0" fontSize="6.5" fontFamily="sans-serif">If you&apos;ve got questions about our treatments,</text>
+      <text x="44" y="115" fill="#c8c8f0" fontSize="6.5" fontFamily="sans-serif">pricing, or hours — I&apos;m happy to help!</text>
 
       {/* Stat bar */}
-      <rect x="172" y="130" width="98" height="10" rx="3" fill="#a78bfa11" />
-      <text x="176" y="137.5" fill="#a78bfa" fontSize="6" fontFamily="monospace">90% queries resolved · No human needed</text>
+      <rect x="14" y="133" width="252" height="10" rx="2" fill="#a78bfa11" />
+      <text x="18" y="140.5" fill="#a78bfa" fontSize="6" fontFamily="monospace">90% queries auto-resolved · 24/7 · No human needed</text>
     </svg>
   );
 }
@@ -361,7 +365,7 @@ const PROJECTS: Project[] = [
     accentColor: '#a78bfa',
     Preview: ChatbotPreview,
     caseStudyLabel: 'Full project on Notion',
-    caseStudyUrl: '',
+    caseStudyUrl: 'https://precious-gymnast-805.notion.site/AI-Chatbot-for-Customer-Inquiries-Cosmetics-Clinic-3855273f5fc581978bd7c608c29d4467',
   },
   {
     id: 3,
