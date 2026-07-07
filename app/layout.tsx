@@ -5,26 +5,27 @@ import { ThemeProvider } from 'next-themes';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Ana Flor Delfin — AI Automation Specialist',
+  metadataBase: new URL('https://interactive-portfolio-rouge.vercel.app'),
+  title: 'Ana Flor Delfin: AI Automation Specialist',
   description:
-    'AI Automation Specialist cutting client turnaround by ~60%. Chat with my AI avatar to learn about my work and how I can automate your business.',
+    'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that cut client turnaround by ~60%. Chat with my AI avatar to explore six in-depth case studies.',
   openGraph: {
-    title: 'Ana Flor Delfin — AI Automation Specialist',
-    description: 'Chat with my AI avatar to learn about my work and how I can automate your business.',
+    title: 'Ana Flor Delfin: AI Automation Specialist',
+    description: 'Chat with my AI avatar to explore six in-depth automation case studies and how I can automate your business.',
     type: 'website',
     images: [
       {
         url: '/me.jpeg',
         width: 800,
         height: 800,
-        alt: 'Ana Flor Delfin — AI Automation Specialist',
+        alt: 'Ana Flor Delfin, AI Automation Specialist',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Ana Flor Delfin — AI Automation Specialist',
-    description: 'Chat with my AI avatar to learn about my work and how I can automate your business.',
+    title: 'Ana Flor Delfin: AI Automation Specialist',
+    description: 'Chat with my AI avatar to explore six in-depth automation case studies and how I can automate your business.',
     images: ['/me.jpeg'],
   },
 };
@@ -34,8 +35,28 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Ana Flor Delfin',
   jobTitle: 'AI Automation Specialist',
-  description: 'AI Automation Specialist cutting client turnaround by ~60% with AI automation.',
+  description: 'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that cut client turnaround by ~60%.',
   url: 'https://interactive-portfolio-rouge.vercel.app',
+  email: 'vadelfinanaflor28@gmail.com',
+  telephone: '+639973401975',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Naval',
+    addressRegion: 'Biliran',
+    addressCountry: 'PH',
+  },
+  knowsAbout: [
+    'AI Automation',
+    'n8n',
+    'GoHighLevel',
+    'Make.com',
+    'Airtable',
+    'Notion AI',
+    'ChatGPT',
+    'Claude Code',
+    'Executive Support',
+    'Business Operations',
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -15,8 +15,8 @@ export default function ChatMessage({ message, isStreaming = false }: Props) {
   const isUser = message.role === 'user';
 
   const rawContent = message.content ?? '';
-  const hasProjects = !isUser && rawContent.includes('[SHOW_PROJECTS]');
-  const displayContent = rawContent.replace('[SHOW_PROJECTS]', '').trim();
+  const hasProjects = !isUser && /\[SHOW_PROJECTS\]/i.test(rawContent);
+  const displayContent = rawContent.replace(/\[SHOW_PROJECTS\]/gi, '').trim();
 
   return (
     <motion.div
@@ -66,21 +66,6 @@ export default function ChatMessage({ message, isStreaming = false }: Props) {
                 )}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Typing indicator — shown when streaming starts but no content yet */}
-        {!isUser && !displayContent && isStreaming && (
-          <div
-            className="px-4 py-3 rounded-2xl rounded-bl-sm avatar-bubble-glow flex items-center gap-1"
-            style={{
-              background: 'var(--avatar-bubble)',
-              border: '1px solid var(--avatar-bubble-border)',
-            }}
-          >
-            <span className="typing-dot w-2 h-2 rounded-full" style={{ background: 'var(--accent)', opacity: 0.5 }} />
-            <span className="typing-dot w-2 h-2 rounded-full" style={{ background: 'var(--accent)', opacity: 0.5 }} />
-            <span className="typing-dot w-2 h-2 rounded-full" style={{ background: 'var(--accent)', opacity: 0.5 }} />
           </div>
         )}
 

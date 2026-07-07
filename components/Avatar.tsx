@@ -26,9 +26,9 @@ export default function Avatar({ state = 'idle', size = 160 }: AvatarProps) {
   const thinkDirRef   = useRef<1 | -1>(1);
   const thinkFrameRef = useRef<number>(DEFAULT_FRAME);
 
-  // Preload the full usable range so src swaps are instant
+  // Preload the interactive range so src swaps are instant
   useEffect(() => {
-    for (let i = LOOK_LEFT_FRAME; i <= LOOK_RIGHT_FRAME; i++) {
+    for (let i = 60; i <= 120; i++) {
       new Image().src = frameUrl(i);
     }
   }, []);

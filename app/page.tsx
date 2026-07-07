@@ -33,11 +33,7 @@ export default function Page() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  useEffect(() => {
-    if (isLoading) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [isLoading, messages.at(-1)?.content]);
+  }, [messages, isLoading]);
 
   const handleChipSelect = (msg: { role: 'user'; content: string }, label?: string) => {
     if (label === 'Me') setShowMeCard(true);
@@ -86,7 +82,7 @@ export default function Page() {
                     </motion.span>
                   </h1>
                   <p className="text-base font-medium" style={{ color: 'var(--muted)' }}>
-                    AI-Powered Virtual Assistant{' '}
+                    AI Automation Specialist{' '}
                     <span style={{ color: 'var(--accent)' }}>·</span>{' '}
                     Naval, Biliran PH
                   </p>
@@ -122,7 +118,7 @@ export default function Page() {
                     Back
                   </motion.button>
                   <p className="text-xs font-medium tracking-wide" style={{ color: 'var(--accent)' }}>
-                    Ana Flor · AI Automation Specialist
+                    Ana Flor, AI Automation Specialist
                   </p>
                 </motion.div>
               )}
@@ -151,7 +147,7 @@ export default function Page() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Ana Flor Delfin</p>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--accent)' }}>AI-Powered Virtual Assistant</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--accent)' }}>AI Automation Specialist</p>
                     <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>Naval, Biliran PH</p>
                   </div>
                 </motion.div>

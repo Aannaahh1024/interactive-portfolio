@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ana Flor P. Delfin, AI Automation Specialist</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #1a1a1a;
+      background: #fff;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 44px 48px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Header ─────────────────────────────── */
+    .header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #26b5d9;
+      margin-bottom: 18px;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: #0a0a0a;
+      line-height: 1.1;
+    }
+    .header .job-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #26b5d9;
+      margin: 5px 0 10px;
+    }
+    .contact-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 18px;
+      font-size: 11.5px;
+      color: #555;
+    }
+    .contact-grid span::before { content: ''; }
+    .header-right {
+      text-align: right;
+      font-size: 11.5px;
+      color: #666;
+      line-height: 1.7;
+      padding-top: 4px;
+    }
+    .header-right strong {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #26b5d9;
+      margin-bottom: 2px;
+    }
+
+    /* ── Section ─────────────────────────────── */
+    .section { margin-bottom: 16px; }
+    .section-title {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: #26b5d9;
+      margin-bottom: 7px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    /* ── Summary ─────────────────────────────── */
+    .summary p {
+      color: #2a2a2a;
+      line-height: 1.65;
+      max-width: 680px;
+    }
+
+    /* ── Skills ─────────────────────────────── */
+    .skills-table {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 24px;
+    }
+    .skill-row {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .skill-cat {
+      font-weight: 700;
+      font-size: 11.5px;
+      color: #0a0a0a;
+      white-space: nowrap;
+      min-width: 128px;
+    }
+    .skill-vals {
+      font-size: 11.5px;
+      color: #555;
+    }
+
+    /* ── Projects ─────────────────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+    }
+    .project-card {
+      padding: 9px 11px;
+      border-left: 2.5px solid #26b5d9;
+      background: #f8feff;
+    }
+    .project-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+    .project-name {
+      font-weight: 700;
+      font-size: 12px;
+      color: #0a0a0a;
+    }
+    .project-industry {
+      font-size: 10.5px;
+      color: #888;
+      white-space: nowrap;
+    }
+    .project-result {
+      font-size: 11.5px;
+      color: #333;
+      line-height: 1.5;
+      margin-bottom: 3px;
+    }
+    .project-tools {
+      font-size: 10.5px;
+      color: #888;
+    }
+    .project-link {
+      font-size: 10.5px;
+      color: #26b5d9;
+      text-decoration: none;
+    }
+    .project-link:hover { text-decoration: underline; }
+
+    /* ── Experience ─────────────────────────────── */
+    .exp-item { margin-bottom: 13px; }
+    .exp-item:last-child { margin-bottom: 0; }
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1px;
+    }
+    .exp-title {
+      font-weight: 700;
+      font-size: 12.5px;
+      color: #0a0a0a;
+    }
+    .exp-date {
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+    }
+    .exp-org {
+      font-size: 11.5px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    .exp-bullets {
+      padding-left: 14px;
+      list-style: disc;
+    }
+    .exp-bullets li {
+      font-size: 11.5px;
+      color: #333;
+      line-height: 1.55;
+      margin-bottom: 2px;
+    }
+    .exp-bullets li strong { color: #0a0a0a; }
+
+    /* ── Education ─────────────────────────────── */
+    .edu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .edu-deg { font-weight: 700; font-size: 12px; color: #0a0a0a; }
+    .edu-detail { font-size: 11.5px; color: #555; margin-top: 1px; }
+    .edu-date { font-size: 11px; color: #888; }
+
+    /* ── Footer ─────────────────────────────── */
+    .footer {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #e8e8e8;
+      font-size: 11px;
+      color: #aaa;
+      text-align: center;
+    }
+
+    /* ── Print ─────────────────────────────── */
+    @media print {
+      body { padding: 28px 36px; font-size: 11.5px; }
+      .project-card { background: #f8feff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { margin: 0.45in; size: A4; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ────────────────────────────────────────── -->
+  <header class="header">
+    <div>
+      <h1>Ana Flor P. Delfin</h1>
+      <p class="job-title">AI Automation Specialist | n8n &middot; Make.com &middot; GoHighLevel &middot; Airtable | Executive Virtual Assistant</p>
+      <div class="contact-grid">
+        <span>vadelfinanaflor28@gmail.com</span>
+        <span>+63 997 340 1975</span>
+        <span>Philippines</span>
+        <span><a href="https://interactive-portfolio-rouge.vercel.app" target="_blank">interactive-portfolio-rouge.vercel.app</a></span>
+      </div>
+    </div>
+    <div class="header-right">
+      <strong>Availability</strong>
+      Full-time or Part-time<br />
+      100% Remote &amp; Async-first<br />
+      PHT (GMT+8)<br />
+      AU · SG · EU · US overlap
+    </div>
+  </header>
+
+  <!-- ── SUMMARY ─────────────────────────────────────── -->
+  <section class="section summary">
+    <p class="section-title">Summary</p>
+    <p>
+      Former educator (8 years, Department of Education) turned AI automation specialist. My portfolio documents six in-depth automation case studies: AI inbox triage, AI content repurposing, a complete GoHighLevel growth system (funnel, AI chatbot, lead automation), client onboarding, and relational trackers, built with n8n, Make.com, GoHighLevel, Airtable, Notion, ChatGPT, Claude, and Gemini, each with live links and walkthroughs. Send me a real task from your business and I will build you a working sample before you hire me.
+    </p>
+  </section>
+
+  <!-- ── SKILLS ─────────────────────────────────────── -->
+  <section class="section">
+    <p class="section-title">Core Skills</p>
+    <div class="skills-table">
+      <div class="skill-row">
+        <span class="skill-cat">AI &amp; Automation</span>
+        <span class="skill-vals">n8n (AI Agents, LLM Chains), Make.com, Zapier, GoHighLevel (Workflows, Conversation AI, Funnel Builder, CRM), Airtable, Notion &amp; Notion AI, ChatGPT, Claude AI, Claude Code + MCP agentic tooling, Google Gemini API, Canva AI</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat">Executive Support</span>
+        <span class="skill-vals">Calendar &amp; Inbox Mgmt, Stakeholder Comms, Event Coordination</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat">Operations</span>
+        <span class="skill-vals">SOP Design, Project Management, Pipeline Mgmt, Reporting</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat">Tools</span>
+        <span class="skill-vals">Google Workspace, MS Office 365, Notion, Slack, Teams, Zoom</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ─────────────────────────────────────── -->
+  <section class="section">
+    <p class="section-title">Selected Projects: 6 In-Depth Case Studies</p>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-top">
+          <span class="project-name">AI Inbox Triage &amp; Draft-Reply System</span>
+          <span class="project-industry">Service Business</span>
+        </div>
+        <p class="project-result">Built a Make.com pipeline where every incoming Gmail is classified by Gemini into Inquiry, Urgent, Complaint, or Spam, auto-labeled, and given an AI-drafted, tone-matched reply saved to Drafts. Full error handling; nothing sends without a human click.</p>
+        <p class="project-tools">Make.com, Gmail, Google Gemini, Prompt Engineering &nbsp;·&nbsp; <a class="project-link" href="https://www.loom.com/share/a0dcbe3cffa74251b99294aeb899a172" target="_blank">Watch the Loom walkthrough ↗</a></p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <span class="project-name">Podcast Content Repurposing Engine</span>
+          <span class="project-industry">Podcaster / Creator</span>
+        </div>
+        <p class="project-result">Built an n8n pipeline with Claude Code and the n8n MCP: a dropped transcript triggers a Gemini chain producing show notes, a blog post, and social content, filed to a Notion content calendar for human approval before posting.</p>
+        <p class="project-tools">n8n, Claude Code + MCP, Google Gemini, Notion API &nbsp;·&nbsp; <a class="project-link" href="https://www.loom.com/share/cd7472e2b3054fb6b987e56ff924baf7" target="_blank">Watch the Loom walkthrough ↗</a></p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <span class="project-name">Client Onboarding Automation</span>
+          <span class="project-industry">Coaching / Service-Based</span>
+        </div>
+        <p class="project-result">Eliminated every manual onboarding step. One form submission fires a nine-app Make.com pipeline: Drive folder created, Service Agreement generated from a template, CRM contact added with a smart duplicate check, Notion board updated, welcome email sent, and team notified on Slack, in seconds.</p>
+        <p class="project-tools">Make.com, Google Drive, Google Docs, GoHighLevel CRM, Notion, Gmail, Slack &nbsp;·&nbsp; <a class="project-link" href="https://www.loom.com/share/b6c041cacb0048bdb36f437da56c6798" target="_blank">Watch the Loom walkthrough ↗</a></p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <span class="project-name">GoHighLevel Growth System</span>
+          <span class="project-industry">Online Coach</span>
+        </div>
+        <p class="project-result">Built the complete GoHighLevel stack end-to-end: a 4-page payment-ready funnel (Sales, Order, $97 Upsell, Thank You), a Conversation AI chatbot answering pricing, hours, and FAQs 24/7, and a lead capture workflow that auto-tags, welcomes, and routes every new lead within seconds.</p>
+        <p class="project-tools">GoHighLevel Funnel Builder, Conversation AI, Workflows, CRM &nbsp;·&nbsp; <a class="project-link" href="https://www.loom.com/share/4bf59a1b2d4041a09a4fc2b916b0d7e2" target="_blank">Watch the Loom walkthrough ↗</a></p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <span class="project-name">Notion AI Client Pipeline Tracker</span>
+          <span class="project-industry">Real Estate Agent</span>
+        </div>
+        <p class="project-result">Organized a buyer pipeline (showings, offers, follow-ups) into one connected Notion workspace. Notion AI auto-summarizes raw meeting notes into action items, with automated reminders ensuring zero dropped follow-ups.</p>
+        <p class="project-tools">Notion, Notion AI &nbsp;·&nbsp; <a class="project-link" href="https://www.loom.com/share/4700d8c7c4dc46bda71a28f966551c86" target="_blank">Watch the Loom walkthrough ↗</a></p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <span class="project-name">Relational Airtable Project &amp; Task Tracker</span>
+          <span class="project-industry">Marketing / Multi-Client Ops</span>
+        </div>
+        <p class="project-result">Replaced flat spreadsheets with a relational Airtable system: linked Projects, Tasks, and Clients tables with cross-table lookup fields, a formula-driven overdue flag, a filtered at-risk tasks view, and two automations with dynamic email content.</p>
+        <p class="project-tools">Airtable (Linked Records, Formula Fields, Filtered Views, Automations) &nbsp;·&nbsp; <a class="project-link" href="https://www.loom.com/share/4eccf6d5a65648a4bdafd0f98afe63fb" target="_blank">Watch the Loom walkthrough ↗</a></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── EXPERIENCE ─────────────────────────────────────── -->
+  <section class="section">
+    <p class="section-title">Work Experience</p>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <span class="exp-title">AI Automation Specialist: Independent Projects</span>
+        <span class="exp-date">2024 – Present</span>
+      </div>
+      <p class="exp-org">Self-directed · Remote</p>
+      <ul class="exp-bullets">
+        <li>Designed and delivered 6 in-depth automation case studies for real clients across service operations, content creation, coaching, e-commerce, real estate, and marketing operations, all fully functional and documented.</li>
+        <li>Independently scoped, built, tested, and documented each system using n8n, Make.com, GoHighLevel, Airtable, Notion AI, ChatGPT, Claude, Claude Code with MCP, and Google Gemini with no supervision.</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <span class="exp-title">Operations Specialist (Teacher): World History, Economics &amp; Entrepreneurship</span>
+        <span class="exp-date">2017 – 2025</span>
+      </div>
+      <p class="exp-org">Department of Education, Philippines</p>
+      <ul class="exp-bullets">
+        <li>Planned and executed <strong>10+ events per year</strong> end-to-end (logistics, coordination with external partners, and post-event reporting) across multiple stakeholder groups simultaneously.</li>
+        <li>Designed and maintained organizational SOPs in Notion, enabling consistent workflows across <strong>teams of 30+ staff</strong> with zero process drift.</li>
+        <li>Produced weekly and quarterly performance reports in Google Sheets and MS Office 365; managed end-to-end stakeholder communications with <strong>zero dropped follow-ups across 8 years</strong>.</li>
+        <li>Adopted ChatGPT and Claude AI to draft and summarize reports and communications, cutting personal output time by <strong>~60%</strong> and applying that approach to client work.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── EDUCATION ─────────────────────────────────────── -->
+  <section class="section">
+    <p class="section-title">Education &amp; Credentials</p>
+    <div class="edu-row">
+      <div>
+        <p class="edu-deg">Bachelor in Secondary Education, Major in Social Studies</p>
+        <p class="edu-detail">Biliran Province State University &nbsp;·&nbsp; Licensed Professional Teacher (LPT)</p>
+      </div>
+      <span class="edu-date">2013 – 2016</span>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────── -->
+  <div class="footer">
+    Full project documentation, live demos, and case study links available at
+    <a href="https://interactive-portfolio-rouge.vercel.app" style="color:#26b5d9;">interactive-portfolio-rouge.vercel.app</a>
+  </div>
+
+</body>
+</html>
