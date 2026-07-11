@@ -8,10 +8,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://interactive-portfolio-rouge.vercel.app'),
   title: 'Ana Flor Delfin: AI Automation Specialist',
   description:
-    'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that cut client turnaround by ~60%. Chat with my AI avatar to explore six in-depth case studies.',
+    'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that cut client turnaround by ~60%. Chat with my AI avatar to explore seven in-depth case studies.',
   openGraph: {
     title: 'Ana Flor Delfin: AI Automation Specialist',
-    description: 'Chat with my AI avatar to explore six in-depth automation case studies and how I can automate your business.',
+    description: 'Chat with my AI avatar to explore seven in-depth automation case studies and how I can automate your business.',
     type: 'website',
     images: [
       {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Ana Flor Delfin: AI Automation Specialist',
-    description: 'Chat with my AI avatar to explore six in-depth automation case studies and how I can automate your business.',
+    description: 'Chat with my AI avatar to explore seven in-depth automation case studies and how I can automate your business.',
     images: ['/me.jpeg'],
   },
 };

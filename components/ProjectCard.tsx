@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Clock, Zap, TrendingUp, MessageSquare, Users, FileText, MousePointer, GitBranch } from 'lucide-react';
+import { Clock, Zap, TrendingUp, MessageSquare, Users, FileText, MousePointer, GitBranch, Video, Share2 } from 'lucide-react';
 
 /* ─── SVG Preview Components ─────────────────────────────────── */
 
@@ -105,6 +105,68 @@ function PodcastRepurposePreview() {
       {/* Stat bar */}
       <rect x="14" y="123" width="252" height="12" rx="2" fill="#f472b611" />
       <text x="18" y="131" fill="#f472b6" fontSize="6" fontFamily="monospace">1 transcript → 6 content pieces · Human-approved before posting</text>
+    </svg>
+  );
+}
+
+function ReelFactoryPreview() {
+  return (
+    <svg viewBox="0 0 280 145" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="145" fill="#060614" />
+      {/* Header bar */}
+      <rect x="0" y="0" width="280" height="28" fill="#0d0d1e" />
+      <circle cx="12" cy="14" r="4" fill="#ff5f57" />
+      <circle cx="24" cy="14" r="4" fill="#febc2e" />
+      <circle cx="36" cy="14" r="4" fill="#28c840" />
+      <text x="68" y="18" fill="#555" fontSize="7" fontFamily="monospace">n8n · AI Reel Factory</text>
+
+      {/* Stage 1: Renderer chain */}
+      <circle cx="24" cy="58" r="9" fill="#0ea5e9" />
+      <text x="24" y="61.5" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle">▲</text>
+      <text x="24" y="74" fill="#666" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Transcript</text>
+      <line x1="33" y1="58" x2="44" y2="58" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="2,2" />
+
+      <circle cx="55" cy="58" r="10" fill="#c084fc" />
+      <text x="55" y="61.5" fill="white" fontSize="8" fontFamily="sans-serif" textAnchor="middle">✦</text>
+      <text x="55" y="76" fill="#666" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Script + TTS</text>
+      <line x1="65" y1="58" x2="76" y2="58" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="2,2" />
+
+      <rect x="78" y="49" width="42" height="18" rx="3" fill="#0d1224" stroke="#c084fc40" strokeWidth="0.6" />
+      <text x="99" y="60.5" fill="#c084fc" fontSize="5.5" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">FFmpeg</text>
+      <text x="99" y="66.5" fill="#888" fontSize="4.5" fontFamily="sans-serif" textAnchor="middle">render</text>
+      <line x1="120" y1="58" x2="131" y2="58" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="2,2" />
+
+      {/* Notion review card */}
+      <rect x="133" y="40" width="60" height="38" rx="4" fill="#0d0d1e" stroke="#666666" strokeWidth="0.8" />
+      <text x="163" y="53" fill="#e0e0ff" fontSize="6" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Notion</text>
+      <rect x="139" y="58" width="48" height="10" rx="2" fill="#f59e0b18" />
+      <text x="163" y="65" fill="#f59e0b" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Approve?</text>
+      <text x="163" y="75" fill="#666" fontSize="4.2" fontFamily="sans-serif" textAnchor="middle">human click</text>
+      <line x1="195" y1="58" x2="206" y2="58" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="2,2" />
+
+      {/* Stage 2: Distribution targets */}
+      <rect x="208" y="32" width="58" height="11" rx="3" fill="#0d1224" stroke="#ef444420" strokeWidth="0.6" />
+      <text x="237" y="40" fill="#ef4444" fontSize="5" fontFamily="sans-serif" textAnchor="middle">YouTube Shorts</text>
+
+      <rect x="208" y="46" width="58" height="11" rx="3" fill="#0d1224" stroke="#f472b620" strokeWidth="0.6" />
+      <text x="237" y="54" fill="#f472b6" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Instagram Reels</text>
+
+      <rect x="208" y="60" width="58" height="11" rx="3" fill="#0d1224" stroke="#38bdf820" strokeWidth="0.6" />
+      <text x="237" y="68" fill="#38bdf8" fontSize="5" fontFamily="sans-serif" textAnchor="middle">Facebook Reels</text>
+
+      <rect x="208" y="74" width="58" height="11" rx="3" fill="#0d1224" stroke="#e2e8f020" strokeWidth="0.6" />
+      <text x="237" y="82" fill="#e2e8f0" fontSize="5" fontFamily="sans-serif" textAnchor="middle">TikTok</text>
+
+      {/* Vertical video frame */}
+      <rect x="20" y="90" width="26" height="34" rx="3" fill="#0d0d1e" stroke="#c084fc40" strokeWidth="0.8" />
+      <rect x="23" y="93" width="20" height="20" rx="1.5" fill="#1a1a2e" />
+      <rect x="24" y="115" width="16" height="3" rx="1" fill="#c084fc30" />
+      <rect x="24" y="120" width="10" height="2.5" rx="1" fill="#c084fc20" />
+
+      {/* Stat bar */}
+      <rect x="52" y="98" width="214" height="26" rx="2" fill="#c084fc11" />
+      <text x="159" y="108" fill="#c084fc" fontSize="6" fontFamily="monospace" textAnchor="middle">1 transcript → 4 platforms</text>
+      <text x="159" y="118" fill="#c084fc" fontSize="6" fontFamily="monospace" textAnchor="middle">1 human click in the middle</text>
     </svg>
   );
 }
@@ -428,6 +490,23 @@ const PROJECTS: Project[] = [
   },
   {
     id: 2,
+    title: 'AI Reel Factory & Auto-Distribution System',
+    category: 'Content Creator · Podcaster · Agency',
+    description:
+      'Short-form video is the highest-leverage content format, but producing it is brutal: scripting, voiceover, editing, captions, then uploading to four platforms separately. A two-stage n8n system, built agentically with Claude Code and the n8n MCP, now turns a dropped transcript into a scripted, voiced, captioned vertical video with FFmpeg, then lands it as a Notion review card. One approval click auto-publishes to YouTube Shorts, Instagram Reels, Facebook Reels, and TikTok with duplicate-post protection built in.',
+    metrics: [
+      { icon: <Video size={11} />, label: 'Script, voice & captions automated' },
+      { icon: <Zap size={11} />, label: 'FFmpeg-rendered vertical video' },
+      { icon: <Share2 size={11} />, label: 'Published to 4 platforms, 1 click' },
+    ],
+    tags: ['n8n', 'Claude Code + MCP', 'FFmpeg', 'Google Gemini', 'Pexels API', 'YouTube Data API', 'Meta Graph API', 'TikTok Content Posting API'],
+    accentColor: '#c084fc',
+    Preview: ReelFactoryPreview,
+    caseStudyLabel: 'Watch the Loom walkthrough',
+    caseStudyUrl: 'https://www.loom.com/share/5810bfa15f904193be7b55bd45d313f1',
+  },
+  {
+    id: 3,
     title: 'Client Onboarding Automation',
     category: 'Coaching / Service-Based Business',
     description:
@@ -444,7 +523,7 @@ const PROJECTS: Project[] = [
     caseStudyUrl: 'https://www.loom.com/share/b6c041cacb0048bdb36f437da56c6798',
   },
   {
-    id: 3,
+    id: 4,
     title: 'GoHighLevel Growth System',
     category: 'Funnel + AI Chatbot + Lead Automation · Online Coach',
     description:
@@ -461,7 +540,7 @@ const PROJECTS: Project[] = [
     caseStudyUrl: 'https://www.loom.com/share/4bf59a1b2d4041a09a4fc2b916b0d7e2',
   },
   {
-    id: 4,
+    id: 5,
     title: 'Notion AI Client Pipeline Tracker',
     category: 'Real Estate Agent',
     description:
@@ -478,7 +557,7 @@ const PROJECTS: Project[] = [
     caseStudyUrl: 'https://www.loom.com/share/4700d8c7c4dc46bda71a28f966551c86',
   },
   {
-    id: 5,
+    id: 6,
     title: 'Relational Airtable Project & Task Tracker',
     category: 'Marketing / Multi-Client Operations',
     description:
