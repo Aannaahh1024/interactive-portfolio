@@ -23,7 +23,8 @@ export default function ChatMessage({ message, isStreaming = false }: Props) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className={`flex w-full mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}
+      data-message-id={message.id}
+      className={`flex w-full mb-4 scroll-mt-4 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       <div className={`flex flex-col gap-2 ${isUser ? 'items-end' : 'items-start'} max-w-[85%]`}>
         {/* Bubble */}

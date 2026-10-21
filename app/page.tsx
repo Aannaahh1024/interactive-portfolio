@@ -12,6 +12,7 @@ import SuggestionChips from '@/components/SuggestionChips';
 import QuickActions from '@/components/QuickActions';
 import ThemeToggle from '@/components/ThemeToggle';
 import MouseEffect from '@/components/MouseEffect';
+import FeaturedWork from '@/components/FeaturedWork';
 
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -31,9 +32,20 @@ export default function Page() {
     ? 'speaking'
     : 'idle';
 
+  // Scroll only when a message is added, not on every streamed chunk. A new
+  // reply is brought into view at its start so the user reads from the top.
+  const lastMessage = messages.at(-1);
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+    if (!lastMessage) return;
+    if (lastMessage.role === 'assistant') {
+      document
+        .querySelector(`[data-message-id="${lastMessage.id}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages.length]);
 
   const handleChipSelect = (msg: { role: 'user'; content: string }, label?: string) => {
     if (label === 'Me') setShowMeCard(true);
@@ -87,9 +99,17 @@ export default function Page() {
                     Naval, Biliran PH
                   </p>
                   <p className="text-sm mt-1.5 max-w-sm mx-auto" style={{ color: 'var(--muted)', opacity: 0.7 }}>
-                    I cut turnaround by ~60% with AI automation.
-                    Ask me anything below.
+                    I build AI automations that replace manual busywork.
+                    Remote, GMT+8, open to full-time and part-time work.
                   </p>
+                  <FeaturedWork />
+                  <a
+                    href="mailto:vadelfinanaflor28@gmail.com"
+                    className="inline-block mt-4 px-5 py-2 rounded-full text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style={{ background: 'var(--accent)', color: '#050505', outlineColor: 'var(--accent)' }}
+                  >
+                    Get in touch
+                  </a>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -120,6 +140,13 @@ export default function Page() {
                   <p className="text-xs font-medium tracking-wide" style={{ color: 'var(--accent)' }}>
                     Ana Flor, AI Automation Specialist
                   </p>
+                  <a
+                    href="mailto:vadelfinanaflor28@gmail.com"
+                    className="px-2.5 py-1 rounded-full text-xs font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    style={{ background: 'var(--accent)', color: '#050505', outlineColor: 'var(--accent)' }}
+                  >
+                    Get in touch
+                  </a>
                 </motion.div>
               )}
             </AnimatePresence>

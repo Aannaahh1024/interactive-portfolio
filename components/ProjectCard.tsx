@@ -453,7 +453,7 @@ interface Project {
   caseStudyUrl: string;
 }
 
-const PROJECTS: Project[] = [
+export const PROJECTS: Project[] = [
   {
     id: 0,
     title: 'AI Inbox Triage & Draft-Reply System',

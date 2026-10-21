@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://interactive-portfolio-rouge.vercel.app'),
   title: 'Ana Flor Delfin: AI Automation Specialist',
   description:
-    'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that cut client turnaround by ~60%. Chat with my AI avatar to explore seven in-depth case studies.',
+    'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that replace manual busywork. Chat with my AI avatar to explore seven in-depth case studies.',
   openGraph: {
     title: 'Ana Flor Delfin: AI Automation Specialist',
     description: 'Chat with my AI avatar to explore seven in-depth automation case studies and how I can automate your business.',
@@ -35,7 +35,7 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Ana Flor Delfin',
   jobTitle: 'AI Automation Specialist',
-  description: 'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that cut client turnaround by ~60%.',
+  description: 'AI Automation Specialist building n8n, Make.com, GoHighLevel, and Airtable systems that replace manual busywork.',
   url: 'https://interactive-portfolio-rouge.vercel.app',
   email: 'vadelfinanaflor28@gmail.com',
   telephone: '+639973401975',

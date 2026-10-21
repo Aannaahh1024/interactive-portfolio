@@ -7,7 +7,7 @@ import { FolderOpen, Zap, Mail, Smile } from 'lucide-react';
 const ACTIONS = [
   { label: 'Me',       photo: '/me.jpeg',  message: 'Tell me about yourself — who is Ana Flor?' },
   { label: 'Work',     Icon: FolderOpen,   message: 'Show me your best projects.' },
-  { label: 'Toolkit',  Icon: Zap,          message: 'What skills and tools do you use?' },
+  { label: 'Skills', Icon: Zap,          message: 'What skills and tools do you use?' },
   { label: 'Hire Me',  Icon: Mail,         message: 'How can I contact you or hire you?' },
   { label: 'Fun',      Icon: Smile,        message: 'Tell me a fun fact about yourself!' },
 ] as const;
